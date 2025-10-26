@@ -28,22 +28,15 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cached_network_image: ^3.4.1
   cupertino_icons: ^1.0.8
-  dartz: ^0.10.1
-  dio: ^5.8.0+1
-  equatable: ^2.0.7
+
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.1
-  get_it: ^8.0.3
-  go_router: ^15.2.3
-  http: ^1.4.0
-  shimmer_loading: ^0.0.1
-  url_launcher: ^6.3.1
+
 
 dev_dependencies:
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
 
@@ -72,10 +65,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: GT Sectra Fine
-      fonts:
-        - asset: assets/fonts/GT Sectra Fine Regular.ttf
+  # fonts:
+  #   - family: GT Sectra Fine
+  #     fonts:
+  #       - asset: assets/fonts/GT Sectra Fine Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
@@ -86,3 +79,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 21 
