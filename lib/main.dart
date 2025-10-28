@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google/core/helper_functions/on_generate_routes.dart';
 import 'package:google/features/splash/presentation/views/splash_view.dart';
+import 'package:google/generated/l10n.dart';
 
 void main(){
 runApp(const FruitApp());
@@ -12,9 +14,17 @@ class FruitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+       localizationsDelegates: [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+            ],
+            locale: const Locale('ar'),
+      supportedLocales: S.delegate.supportedLocales,
       onGenerateRoute: onGenerateRoute,
       initialRoute: SplashView.routeName,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
