@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google/constants.dart';
+import 'package:google/core/services/shared_preferences_singleton.dart';
+import 'package:google/core/utils/app_text_styles.dart';
+import 'package:google/features/auth/presentation/views/login_view.dart';
 import 'package:svg_flutter/svg.dart';
 
 class PageViewItem extends StatelessWidget {
@@ -8,10 +12,12 @@ class PageViewItem extends StatelessWidget {
     required this.backgroundImage,
     required this.subtitle,
     required this.title,
+    required this.isvisible,
   });
   final String image, backgroundImage;
   final String subtitle;
   final Widget title;
+  final bool isvisible;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,27 +36,38 @@ class PageViewItem extends StatelessWidget {
                 right: 0,
                 child: SvgPicture.asset(image),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text("تخط", style: TextStyle(color: Colors.black87)),
+              Visibility(
+                visible: isvisible,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GestureDetector(
+                    onTap: (){
+                    Prefs.setBool(kIsOnBoardingViewSeen, true); 
+                       Navigator.of(context).pushReplacementNamed(LoginView.routeName);
+                    },
+                    child: Text(
+                      "تخط",
+                      style: TextStyles.regular13.copyWith(
+                        color: Color(0xff949d9e),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 60.0),
+        const SizedBox(height: 40.0),
 
         title,
         const SizedBox(height: 24.0),
 
         Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.symmetric(horizontal: 23.0),
           child: Text(
             subtitle,
             textAlign: TextAlign.center,
-             style: TextStyle(  
-                color: Color(0XFF4E5556),
-                fontFamily: 'Cairo',
-              ),
+            style: TextStyles.semibold13.copyWith(color: Color(0xff4e5456)),
           ),
         ),
       ],

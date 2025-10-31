@@ -28,13 +28,14 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter_localizations:
-    sdk: flutter
   cupertino_icons: ^1.0.8
+  dots_indicator: ^4.0.1
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.3
   svg_flutter: ^0.0.1
-  dots_indicator: ^4.0.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.4
@@ -59,12 +60,17 @@ flutter:
   #   - assets/quran_pages/
   #   - images/a_dot_ham.jpeg
   # example:
-  # fonts:
-  #   - family: GT Sectra Fine
-  #     fonts:
-  #       - asset: assets/fonts/GT Sectra Fine Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Regular.ttf
+        - asset: assets/fonts/Cairo-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Cairo-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Cairo-Bold.ttf
+          weight: 700
+
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
