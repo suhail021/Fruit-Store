@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google/core/utils/app_colors.dart';
-import 'package:google/core/utils/app_text_styles.dart';
-import 'package:google/features/auth/presentation/views/signup_view.dart';
+import 'package:myapp/core/utils/app_colors.dart';
+import 'package:myapp/core/utils/app_text_styles.dart';
+import 'package:myapp/features/auth/presentation/views/signup_view.dart';
 
 class DontHaveAccount extends StatelessWidget {
   const DontHaveAccount({super.key});

@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:google/features/auth/domain/entities/user_entity.dart';
-import 'package:google/features/auth/domain/repos/auth_repo.dart';
-import 'package:meta/meta.dart';
+import 'package:myapp/features/auth/domain/entities/user_entity.dart';
+import 'package:myapp/features/auth/domain/repos/auth_repo.dart';
 
 part 'signup_state.dart';
 

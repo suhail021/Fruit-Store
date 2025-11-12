@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google/constants.dart';
-import 'package:google/core/helper_functions/build_error_bar.dart';
-import 'package:google/core/widgets/custom_button.dart';
-import 'package:google/core/widgets/custome_text_form_field.dart';
-import 'package:google/core/widgets/password_field.dart';
-import 'package:google/features/auth/presentation/cubits/signup_cubit/signup_cubit.dart';
-import 'package:google/features/auth/presentation/views/widgets/gender_selector_field.dart';
-import 'package:google/features/auth/presentation/views/widgets/have_account.dart';
-import 'package:google/features/auth/presentation/views/widgets/terms_and_conditions.dart';
+import 'package:myapp/constants.dart';
+import 'package:myapp/core/helper_functions/build_error_bar.dart';
+import 'package:myapp/core/widgets/custom_button.dart';
+import 'package:myapp/core/widgets/custome_text_form_field.dart';
+import 'package:myapp/core/widgets/password_field.dart';
+import 'package:myapp/features/auth/presentation/cubits/signup_cubit/signup_cubit.dart';
+import 'package:myapp/features/auth/presentation/views/widgets/gender_selector_field.dart';
+import 'package:myapp/features/auth/presentation/views/widgets/have_account.dart';
+import 'package:myapp/features/auth/presentation/views/widgets/terms_and_conditions.dart';
 
 class SignupViewBody extends StatefulWidget {
   const SignupViewBody({super.key});

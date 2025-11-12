@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google/constants.dart';
-import 'package:google/core/services/shared_preferences_singleton.dart';
-import 'package:google/core/utils/app_text_styles.dart';
-import 'package:google/features/auth/presentation/views/signin_view.dart';
+import 'package:myapp/constants.dart';
+import 'package:myapp/core/services/shared_preferences_singleton.dart';
+import 'package:myapp/core/utils/app_text_styles.dart';
+import 'package:myapp/features/auth/presentation/views/signin_view.dart';
 import 'package:svg_flutter/svg.dart';
 
 class PageViewItem extends StatelessWidget {

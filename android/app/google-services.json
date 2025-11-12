@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "309809242149",
-    "project_id": "shen-yemen",
-    "storage_bucket": "shen-yemen.firebasestorage.app"
+    "project_number": "598653212605",
+    "project_id": "seeshein-3b3dd",
+    "storage_bucket": "seeshein-3b3dd.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:309809242149:android:945f471b67d362a00a1fcc",
+        "mobilesdk_app_id": "1:598653212605:android:79cf0a2cc3651f465f24d4",
         "android_client_info": {
-          "package_name": "com.example.google"
+          "package_name": "com.shen.yemen"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB-Zd1f_KamKyZoDJXz0CQ5EGt0vRXjTm4"
+          "current_key": "AIzaSyAzCGWVHZVxsuEef-m3QXYSs6neC9-q_o4"
         }
       ],
       "services": {

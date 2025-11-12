@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google/features/auth/presentation/views/signin_view.dart';
-import 'package:google/features/auth/presentation/views/signup_view.dart';
-import 'package:google/features/on_boarding/presentation/views/on_boarding_view.dart';
-import 'package:google/features/splash/presentation/views/splash_view.dart';
+import 'package:myapp/features/auth/presentation/views/signin_view.dart';
+import 'package:myapp/features/auth/presentation/views/signup_view.dart';
+import 'package:myapp/features/on_boarding/presentation/views/on_boarding_view.dart';
+import 'package:myapp/features/splash/presentation/views/splash_view.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {

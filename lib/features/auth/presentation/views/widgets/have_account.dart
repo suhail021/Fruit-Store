@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google/core/utils/app_colors.dart';
-import 'package:google/core/utils/app_text_styles.dart';
+import 'package:myapp/core/utils/app_colors.dart';
+import 'package:myapp/core/utils/app_text_styles.dart';
 
 class HaveAccount extends StatelessWidget {
   const HaveAccount({super.key});

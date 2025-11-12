@@ -1,11 +1,11 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:google/constants.dart';
-import 'package:google/core/services/shared_preferences_singleton.dart';
-import 'package:google/core/utils/app_colors.dart';
-import 'package:google/core/widgets/custom_button.dart';
-import 'package:google/features/auth/presentation/views/signin_view.dart';
-import 'package:google/features/on_boarding/presentation/views/widgets/on_boarding_page_view.dart';
+import 'package:myapp/constants.dart';
+import 'package:myapp/core/services/shared_preferences_singleton.dart';
+import 'package:myapp/core/utils/app_colors.dart';
+import 'package:myapp/core/widgets/custom_button.dart';
+import 'package:myapp/features/auth/presentation/views/signin_view.dart';
+import 'package:myapp/features/on_boarding/presentation/views/widgets/on_boarding_page_view.dart';
 
 class OnBoardingViewBody extends StatefulWidget {
   const OnBoardingViewBody({super.key});

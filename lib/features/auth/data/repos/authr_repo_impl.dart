@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
-import 'package:google/core/errors/exceptions.dart';
-import 'package:google/core/errors/failures.dart';
-import 'package:google/core/services/firebase_auth_service.dart';
-import 'package:google/features/auth/data/model/user_model.dart';
-import 'package:google/features/auth/domain/entities/user_entity.dart';
-import 'package:google/features/auth/domain/repos/auth_repo.dart';
+import 'package:myapp/core/errors/exceptions.dart';
+import 'package:myapp/core/errors/failures.dart';
+import 'package:myapp/core/services/firebase_auth_service.dart';
+import 'package:myapp/features/auth/data/model/user_model.dart';
+import 'package:myapp/features/auth/domain/entities/user_entity.dart';
+import 'package:myapp/features/auth/domain/repos/auth_repo.dart';
 
 class AuthrRepoImpl extends AuthRepo {
   final FirebaseAuthService firebaseAuthService;
@@ -48,6 +48,18 @@ class AuthrRepoImpl extends AuthRepo {
       return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
     }
   }
+  
+  @override
+  Future<Either<Failure, UserEntity>> signinWithGoogle() async {
+      try {
+      var user = await firebaseAuthService.signInWithGoogle();
+      return Right(UserModel.fromfirebaseUser(user));
+    } catch (e) {
+      log("Exception in AuthRepoImpl.signinWithGoogle: ${e.toString()}");
+      return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
+    }
+  }
+  
 
 
   

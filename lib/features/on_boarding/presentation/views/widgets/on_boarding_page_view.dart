@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google/core/utils/app_colors.dart';
-import 'package:google/core/utils/app_images.dart';
-import 'package:google/core/utils/app_text_styles.dart';
-import 'package:google/features/on_boarding/presentation/views/widgets/page_view_item.dart';
+import 'package:myapp/core/utils/app_colors.dart';
+import 'package:myapp/core/utils/app_images.dart';
+import 'package:myapp/core/utils/app_text_styles.dart';
+import 'package:myapp/features/on_boarding/presentation/views/widgets/page_view_item.dart';
 
 class OnBoardingPageView extends StatelessWidget {
   const OnBoardingPageView({super.key, required this.pageController});

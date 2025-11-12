@@ -1,15 +1,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google/constants.dart';
-import 'package:google/core/utils/app_images.dart';
-import 'package:google/core/widgets/custom_button.dart';
-import 'package:google/core/widgets/custome_text_form_field.dart';
-import 'package:google/core/widgets/password_field.dart';
-import 'package:google/features/auth/presentation/cubits/signin_cubit/signin_cubit.dart';
-import 'package:google/features/auth/presentation/views/widgets/dont_have_account.dart';
-import 'package:google/features/auth/presentation/views/widgets/or_divider.dart';
-import 'package:google/features/auth/presentation/views/widgets/social_login_button.dart';
+import 'package:myapp/constants.dart';
+import 'package:myapp/core/utils/app_images.dart';
+import 'package:myapp/core/widgets/custom_button.dart';
+import 'package:myapp/core/widgets/custome_text_form_field.dart';
+import 'package:myapp/core/widgets/password_field.dart';
+import 'package:myapp/features/auth/presentation/cubits/signin_cubit/signin_cubit.dart';
+import 'package:myapp/features/auth/presentation/views/widgets/dont_have_account.dart';
+import 'package:myapp/features/auth/presentation/views/widgets/or_divider.dart';
+import 'package:myapp/features/auth/presentation/views/widgets/social_login_button.dart';
 
 class SigninViewBody extends StatefulWidget {
   const SigninViewBody({super.key});
@@ -46,7 +46,7 @@ class _SigninViewBodyState extends State<SigninViewBody> {
 
             PasswordField(
               onsaved: (value) {
-                password = value!;
+                password = value!; 
               },
             ),
             SizedBox(height: 16),
@@ -79,7 +79,9 @@ class _SigninViewBodyState extends State<SigninViewBody> {
             SocialLoginButton(
               image: Assets.imagesGoogleIcon,
               title: 'التسجيل بواسطة جوجل',
-              onPressed: () {},
+              onPressed: () {
+                context.read<SigninCubit>().signinWithGoogle();
+              },
             ),
             SizedBox(height: 16),
 
