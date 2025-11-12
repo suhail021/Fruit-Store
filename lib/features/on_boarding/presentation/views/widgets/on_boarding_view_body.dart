@@ -4,7 +4,7 @@ import 'package:google/constants.dart';
 import 'package:google/core/services/shared_preferences_singleton.dart';
 import 'package:google/core/utils/app_colors.dart';
 import 'package:google/core/widgets/custom_button.dart';
-import 'package:google/features/auth/presentation/views/login_view.dart';
+import 'package:google/features/auth/presentation/views/signin_view.dart';
 import 'package:google/features/on_boarding/presentation/views/widgets/on_boarding_page_view.dart';
 
 class OnBoardingViewBody extends StatefulWidget {
@@ -63,7 +63,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
               onPressed: () {
                 Prefs.setBool(kIsOnBoardingViewSeen, true);
 
-                Navigator.of(context).pushReplacementNamed(LoginView.routeName);
+                Navigator.of(context).pushReplacementNamed(SigninView.routeName);
               },
               text: 'ابدأ الان',
             ),
