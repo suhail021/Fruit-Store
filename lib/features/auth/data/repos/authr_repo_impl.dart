@@ -19,6 +19,9 @@ class AuthrRepoImpl extends AuthRepo {
     required this.firebaseAuthService,
   });
   @override
+  
+  
+  
   Future<Either<Failure, UserEntity>> createUserWithEmailAndPassword(
     String email,
     String password,
@@ -47,29 +50,6 @@ class AuthrRepoImpl extends AuthRepo {
       return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
     }
   }
-
-  @override
-  Future<Either<Failure, UserEntity>> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
-    try {
-      var user = await firebaseAuthService.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      var userEntity = await getUserData(uid: user.uid);
-      return Right(userEntity);
-    } on CustomExceptions catch (e) {
-      return Left(ServerFailure(e.message));
-    } catch (e) {
-      log(
-        "Exception in AuthRepoImpl.signInWithEmailAndPassword: ${e.toString()}",
-      );
-      return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
-    }
-  }
-
   @override
   Future<Either<Failure, UserEntity>> signinWithGoogle() async {
     User? user;
@@ -90,6 +70,29 @@ class AuthrRepoImpl extends AuthRepo {
     } catch (e) {
       deletUser(user);
       log("Exception in AuthRepoImpl.signinWithGoogle: ${e.toString()}");
+      return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
+    }
+  }
+
+
+  @override
+  Future<Either<Failure, UserEntity>> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    try {
+      var user = await firebaseAuthService.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      var userEntity = await getUserData(uid: user.uid);
+      return Right(userEntity);
+    } on CustomExceptions catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      log(
+        "Exception in AuthRepoImpl.signInWithEmailAndPassword: ${e.toString()}",
+      );
       return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
     }
   }
