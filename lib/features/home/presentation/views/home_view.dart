@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/features/home/presentation/views/widgets/custom_bottom_navigation_bar.dart';
 import 'package:myapp/features/home/presentation/views/widgets/home_view_body.dart';
 
 class HomeView extends StatelessWidget {
@@ -6,6 +7,8 @@ class HomeView extends StatelessWidget {
   static const String routeName = 'home_view';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: HomeViewBody());
+    return Scaffold(
+      bottomNavigationBar: CustomBottomNavigationBar(currentIndex: 0, onTap: (int value) {  },),
+      body: SafeArea(child: HomeViewBody()));
   }
 }
