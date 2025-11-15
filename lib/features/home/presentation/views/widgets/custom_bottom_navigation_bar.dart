@@ -58,14 +58,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
                             : Colors.grey.shade400,
                       ),
                       const SizedBox(height: 6),
-                      Container(
-                        height: 4,
-                        width: 4,
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: 3,
+                        width: isSelected ? 20 : 0,
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isSelected
-                              ? AppColors.primaryColor
-                              : Colors.transparent,
+                          color: AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ],
