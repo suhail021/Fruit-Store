@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/core/utils/app_colors.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -48,12 +49,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 width: 60,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.blueAccent,
+                  color: AppColors.primaryColor,
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 12,
                       offset: const Offset(0, 4),
-                      color: Colors.blueAccent.withOpacity(0.4),
+                      color: AppColors.primaryColor.withOpacity(0.4),
                     ),
                   ],
                 ),
@@ -74,7 +75,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   Icon(
                     icons[index],
                     size: 26,
-                    color: isSelected ? Colors.blueAccent : Colors.grey[500],
+                    color:
+                        isSelected ? AppColors.primaryColor : Colors.grey[500],
                   ),
                   const SizedBox(height: 4),
                   AnimatedContainer(
@@ -82,7 +84,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
                     height: 3,
                     width: isSelected ? 18 : 0,
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent,
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
