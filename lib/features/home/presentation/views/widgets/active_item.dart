@@ -4,18 +4,18 @@ import 'package:svg_flutter/svg.dart';
 
 class ActiveItem extends StatelessWidget {
   const ActiveItem({
-    super.key, 
+    super.key,
     required this.image,
     this.isMiddleButton = false,
   });
 
   final String image;
   final bool isMiddleButton;
-  
+
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      image, 
+      image,
       color: isMiddleButton ? Colors.white : AppColors.primaryColor,
       width: isMiddleButton ? 28 : 24,
       height: isMiddleButton ? 28 : 24,
