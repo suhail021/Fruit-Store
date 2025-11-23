@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/constants.dart';
-import 'package:myapp/core/widgets/product_item.dart';
 import 'package:myapp/core/widgets/search_text_field.dart';
 import 'package:myapp/features/home/presentation/views/widgets/best_selling_grid_view.dart';
 import 'package:myapp/features/home/presentation/views/widgets/best_selling_header.dart';
 import 'package:myapp/features/home/presentation/views/widgets/custom_home_appbar.dart';
-import 'package:myapp/features/home/presentation/views/widgets/featured_item.dart';
 import 'package:myapp/features/home/presentation/views/widgets/featured_list.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -37,17 +35,14 @@ class HomeViewBody extends StatelessWidget {
                 ),
                 child: BestSellingHeader(),
               ),
-              SizedBox(height: 8,)
-
+              SizedBox(height: 8),
             ],
           ),
-
         ),
         SliverPadding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kHorizintalPadding,
-          ),
-          sliver: BestSellingGridView())
+          padding: const EdgeInsets.symmetric(horizontal: kHorizintalPadding),
+          sliver: BestSellingGridView(),
+        ),
       ],
     );
   }

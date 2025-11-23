@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/core/helper_functions/get_user.dart';
 import 'package:myapp/core/utils/app_images.dart';
 import 'package:myapp/core/utils/app_text_styles.dart';
 import 'package:svg_flutter/svg.dart';
@@ -14,7 +15,7 @@ class CustomHomeAppbar extends StatelessWidget {
         'صباح الخير !..',
         style: TextStyles.regular16.copyWith(color: Color(0xff949D9E)),
       ),
-      subtitle: Text('أحمد مصطفي', style: TextStyles.bold16),
+      subtitle: Text(getuser().name, style: TextStyles.bold16),
       trailing: Container(
         padding: EdgeInsets.all(10),
         decoration: ShapeDecoration(

@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/core/utils/app_colors.dart';
+import 'package:myapp/features/home/presentation/views/domain/entites/bottom_navigation_bar_entity.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onTap;
+import 'naivation_bar_item.dart';
 
-  const CustomBottomNavigationBar({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
+class CustomBottomNavigationBar extends StatefulWidget {
+  const CustomBottomNavigationBar({super.key, required this.onItemTapped});
+  final ValueChanged<int> onItemTapped;
+  @override
+  State<CustomBottomNavigationBar> createState() =>
+      _CustomBottomNavigationBarState();
+}
 
+class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final icons = <IconData>[
-      Icons.home_rounded,
-      Icons.search_rounded,
-      Icons.add,
-      Icons.notifications_rounded,
-      Icons.person_rounded,
-    ];
+    // احسب الزر الأوسط
+    int middleIndex = (bottomNavigationBarItems.length / 2).floor();
 
     return Container(
       height: 70,
@@ -36,53 +34,61 @@ class CustomBottomNavigationBar extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Navigation items
           Row(
-            children: List.generate(5, (index) {
-              if (index == 2) return const Spacer();
-
-              final isSelected = currentIndex == index;
-
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTap(index),
-                  behavior: HitTestBehavior.opaque,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        icons[index],
-                        size: 26,
-                        color: isSelected
-                            ? AppColors.primaryColor
-                            : Colors.grey.shade400,
-                      ),
-                      const SizedBox(height: 6),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: 3,
-                        width: isSelected ? 20 : 0,
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
+            children:
+                bottomNavigationBarItems.asMap().entries.map((e) {
+                  var index = e.key;
+                  var entity = e.value;
+                  return Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = index;
+                          widget.onItemTapped(index);
+                        });
+                      },
+                      child:
+                          index == middleIndex
+                              ? const SizedBox() // مساحة فارغة للزر الأوسط
+                              : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  NaivgationBarItem(
+                                    isSelected: selectedIndex == index,
+                                    bottomNavigationBarEntity: entity,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    height: 3,
+                                    width: selectedIndex == index ? 20 : 0,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                    ),
+                  );
+                }).toList(),
           ),
 
-          // Floating middle button
+          // الزر الأوسط المميز
           Positioned(
-            left: MediaQuery.of(context).size.width / 2 - 28,
-            top: -14,
+            left: MediaQuery.of(context).size.width / 2 - 32,
+            top: -20,
             child: GestureDetector(
-              onTap: () => onTap(2),
+              onTap: () {
+                setState(() {
+                  selectedIndex = middleIndex;
+                  widget.onItemTapped(middleIndex);
+                });
+              },
               child: Container(
-                height: 56,
-                width: 56,
+                width: 64,
+                height: 64,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.primaryColor,
@@ -94,10 +100,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.add,
-                  size: 28,
-                  color: Colors.white,
+                child: Center(
+                  child: NaivgationBarItem(
+                    isSelected: true,
+                    bottomNavigationBarEntity:
+                        bottomNavigationBarItems[middleIndex],
+                    isMiddleButton: true,
+                  ),
                 ),
               ),
             ),

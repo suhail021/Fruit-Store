@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myapp/constants.dart';
 import 'package:myapp/core/errors/exceptions.dart';
 import 'package:myapp/core/errors/failures.dart';
 import 'package:myapp/core/services/database_service.dart';
 import 'package:myapp/core/services/firebase_auth_service.dart';
+import 'package:myapp/core/services/shared_preferences_singleton.dart';
 import 'package:myapp/core/utils/backend_endpoint.dart';
 import 'package:myapp/features/auth/data/model/user_model.dart';
 import 'package:myapp/features/auth/domain/entities/user_entity.dart';
@@ -19,9 +22,6 @@ class AuthrRepoImpl extends AuthRepo {
     required this.firebaseAuthService,
   });
   @override
-  
-  
-  
   Future<Either<Failure, UserEntity>> createUserWithEmailAndPassword(
     String email,
     String password,
@@ -50,6 +50,7 @@ class AuthrRepoImpl extends AuthRepo {
       return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
     }
   }
+
   @override
   Future<Either<Failure, UserEntity>> signinWithGoogle() async {
     User? user;
@@ -62,8 +63,10 @@ class AuthrRepoImpl extends AuthRepo {
       );
       if (isUserExist) {
         await getUserData(uid: user.uid);
+        await saveUserData(user: userEntity);
       } else {
         await addUserData(user: userEntity);
+        await saveUserData(user: userEntity);
       }
 
       return Right(userEntity);
@@ -73,7 +76,6 @@ class AuthrRepoImpl extends AuthRepo {
       return Left(ServerFailure('لقد حدث خطأ ما. الرجاء المحاولة مرة اخرى.'));
     }
   }
-
 
   @override
   Future<Either<Failure, UserEntity>> signInWithEmailAndPassword(
@@ -86,6 +88,7 @@ class AuthrRepoImpl extends AuthRepo {
         password: password,
       );
       var userEntity = await getUserData(uid: user.uid);
+      await saveUserData(user: userEntity);
       return Right(userEntity);
     } on CustomExceptions catch (e) {
       return Left(ServerFailure(e.message));
@@ -109,6 +112,7 @@ class AuthrRepoImpl extends AuthRepo {
       );
       if (isUserExist) {
         await getUserData(uid: user.uid);
+        await saveUserData(user: userEntity);
       } else {
         await addUserData(user: userEntity);
       }
@@ -126,9 +130,15 @@ class AuthrRepoImpl extends AuthRepo {
   Future addUserData({required UserEntity user}) async {
     await databaseService.addData(
       path: BackendEndpoint.addUserData,
-      data: user.toMap(),
+      data: UserModel.fromEntity(user).toMap(),
       docuementId: user.uId,
     );
+  }
+
+  @override
+  Future saveUserData({required UserEntity user}) async {
+    var jsonData = jsonEncode(UserModel.fromEntity(user).toMap());
+    await Prefs.setString(kUserData, jsonData);
   }
 
   Future<void> deletUser(User? user) async {
