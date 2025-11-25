@@ -2,23 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/constants.dart';
 import 'package:myapp/core/cubits/products_cubit/products_cubit.dart';
+import 'package:myapp/core/widgets/custom_app_bar.dart';
 import 'package:myapp/core/widgets/search_text_field.dart';
 import 'package:myapp/features/home/presentation/views/widgets/products_grid_view_block_builder.dart';
-import 'package:myapp/features/home/presentation/views/widgets/best_selling_header.dart';
-import 'package:myapp/features/home/presentation/views/widgets/custom_home_appbar.dart';
-import 'package:myapp/features/home/presentation/views/widgets/featured_list.dart';
+import 'package:myapp/features/home/presentation/views/widgets/products_view_header.dart';
 
-class HomeViewBody extends StatefulWidget {
-  const HomeViewBody({super.key});
+class ProductViewBody extends StatefulWidget {
+  const ProductViewBody({super.key});
 
   @override
-  State<HomeViewBody> createState() => _HomeViewBodyState();
+  State<ProductViewBody> createState() => _ProductViewBodyState();
 }
 
-class _HomeViewBodyState extends State<HomeViewBody> {
+class _ProductViewBodyState extends State<ProductViewBody> {
   @override
   void initState() {
-    context.read<ProductsCubit>().getBestSellingProducts();
+    context.read<ProductsCubit>().getProducts();
     super.initState();
   }
 
@@ -30,7 +29,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
           child: Column(
             children: [
               SizedBox(height: kTopPadding),
-              CustomHomeAppbar(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: kHorizintalPadding),
+                child: buildAppBar(context, title: "المنتجات",showBackIcon: false,showactionsIcon: true),
+              ),
               SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -40,13 +42,13 @@ class _HomeViewBodyState extends State<HomeViewBody> {
               ),
               SizedBox(height: 12),
 
-              FeaturedList(),
-              SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: kHorizintalPadding,
                 ),
-                child: BestSellingHeader(),
+                child: ProductsViewHeader(
+                  productsLength: context.read<ProductsCubit>().productsLength,
+                ),
               ),
               SizedBox(height: 8),
             ],

@@ -9,14 +9,18 @@ import 'package:myapp/core/utils/backend_endpoint.dart';
 class ProductsRepoImpl extends ProductsRepo {
   final DatabaseService databaseService;
 
-  ProductsRepoImpl({required this.databaseService});
+  ProductsRepoImpl( this.databaseService);
   @override
   Future<Either<Failure, List<ProductEntity>>> getBestSellingProducts() async {
     try {
       var data =
           await databaseService.getData(
                 path: BackendEndpoint.getProducts,
-                query: {'limit': 10, 'orderBy': 'sellingCount','descending': true},
+                query: {
+                  'limit': 10,
+                  'orderBy': 'sellingCount',
+                  'descending': true,
+                },
               )
               as List<Map<String, dynamic>>;
       List<ProductEntity> products =

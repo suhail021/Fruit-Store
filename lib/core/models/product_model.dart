@@ -8,7 +8,6 @@ class ProductModel {
   final String code;
   final String description;
   final num price;
-
   final bool isFeatured;
   final num sellingCount;
   String? imageUrl;

@@ -138,7 +138,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
                           gradient: LinearGradient(
                             colors: [
                               AppColors.primaryColor,
-                              AppColors.primaryColor.withOpacity(0.8),
+                              AppColors.primaryColor.withOpacity(0.9),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,

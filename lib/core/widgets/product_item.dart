@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:myapp/core/entities/product_entity.dart';
 import 'package:myapp/core/utils/app_colors.dart';
-import 'package:myapp/core/utils/app_images.dart';
 import 'package:myapp/core/utils/app_text_styles.dart';
-import 'package:svg_flutter/svg_flutter.dart';
+import 'package:myapp/core/widgets/custom_network_image.dart';
+import 'package:myapp/features/home/presentation/cubits/cart_cubit/cart_cubit.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key});
-
+  const ProductItem({super.key, required this.productEntity});
+  final ProductEntity productEntity;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,14 +22,24 @@ class ProductItem extends StatelessWidget {
             right: 0,
             child: Column(
               children: [
-                Image.asset(Assets.imagesFruitTest),
+                productEntity.imageUrl != null
+                    ? Flexible(
+                      child: CustomNetworkImage(
+                        imageUrl: productEntity.imageUrl!,
+                      ),
+                    )
+                    : Container(
+                      color: Colors.grey,
+                      height: 130,
+                      width: double.infinity,
+                    ),
                 ListTile(
-                  title: Text('برتقال', style: TextStyles.bold16),
+                  title: Text(productEntity.name, style: TextStyles.bold16),
                   subtitle: Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: '300 ريال',
+                          text: '${productEntity.price} ريال ',
                           style: TextStyles.bold13.copyWith(
                             color: AppColors.lightsecondaryColor,
                           ),
@@ -47,9 +59,14 @@ class ProductItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  trailing: CircleAvatar(
-                    backgroundColor: AppColors.primaryColor,
-                    child: Icon(Icons.add, color: Colors.white),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      context.read<CartCubit>().addProduct(productEntity);
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.primaryColor,
+                      child: Icon(Icons.add, color: Colors.white),
+                    ),
                   ),
                 ),
               ],

@@ -6,19 +6,24 @@ class BestSellingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'الأكثر مبيعًا',
-          style: TextStyles.bold16,
-        ),
-        const Spacer(),
-        Text(
-          'المزيد',
-             style: TextStyles.regular13,
-        ),
-      ],
+    return GestureDetector(
+      onTap: () {
+        
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'الأكثر مبيعًا',
+            style: TextStyles.bold16,
+          ),
+          const Spacer(),
+          Text(
+            'المزيد',
+               style: TextStyles.regular13,
+          ),
+        ],
+      ),
     );
   }
 }

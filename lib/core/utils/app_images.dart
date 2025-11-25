@@ -22,6 +22,10 @@ class Assets {
   /// assets/images/filter.svg
   static const String imagesFilter = "assets/images/filter.svg";
 
+  /// Assets for imagesFilter2
+  /// assets/images/filter2.svg
+  static const String imagesFilter2 = "assets/images/filter2.svg";
+
   /// Assets for imagesFruitTest
   /// assets/images/fruit_test.png
   static const String imagesFruitTest = "assets/images/fruit_test.png";
@@ -69,6 +73,10 @@ class Assets {
   /// Assets for imagesSplashBottom
   /// assets/images/splash_bottom.svg
   static const String imagesSplashBottom = "assets/images/splash_bottom.svg";
+
+  /// Assets for imagesTrash
+  /// assets/images/trash.svg
+  static const String imagesTrash = "assets/images/trash.svg";
 
   /// Assets for imagesVuesaxBoldSIconDark
   /// assets/images/vuesax/bold/S-icon-dark.svg
