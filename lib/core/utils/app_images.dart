@@ -42,6 +42,10 @@ class Assets {
   /// assets/images/notification.svg
   static const String imagesNotification = "assets/images/notification.svg";
 
+  /// Assets for imagesOrdersSuccess
+  /// assets/images/orders_success.svg
+  static const String imagesOrdersSuccess = "assets/images/orders_success.svg";
+
   /// Assets for imagesPageViewItem1Background
   /// assets/images/page_view_item1_background.svg
   static const String imagesPageViewItem1Background = "assets/images/page_view_item1_background.svg";

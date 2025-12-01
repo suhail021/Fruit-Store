@@ -13,9 +13,9 @@ class Mainviewbodyblocconsumer extends StatelessWidget {
     return BlocListener<CartCubit, CartState>(
       listener: (context, state) {
         if (state is CartItemAdded) {
-          buildErrorBar(context, 'تمت العملية بنجاح');
+          showErrorBar(context, 'تمت العملية بنجاح');
         } if (state is CartItemRemoved){
-           buildErrorBar(context, 'تمت حذف العنصر بنجاح');
+           showErrorBar(context, 'تمت حذف العنصر بنجاح');
 
         }
       },

@@ -15,9 +15,17 @@ List<BottomNavigationBarEntity> get bottomNavigationBarItems => [
     inActiveImage: Assets.imagesVuesaxOutlineUser,
   ),
   BottomNavigationBarEntity(
+    activeImage: Assets.imagesVuesaxBoldShoppingCart,
+    inActiveImage: Assets.imagesVuesaxOutlineShoppingCart,
+  ),
+  BottomNavigationBarEntity(
     activeImage: Assets.imagesVuesaxBoldSIconDark,
     inActiveImage: Assets.imagesVuesaxOutlineSIconLight,
    
+  ),
+  BottomNavigationBarEntity(
+    activeImage: Assets.imagesVuesaxBoldShoppingCart,
+    inActiveImage: Assets.imagesVuesaxOutlineShoppingCart,
   ),
   BottomNavigationBarEntity(
     activeImage: Assets.imagesVuesaxBoldShoppingCart,
