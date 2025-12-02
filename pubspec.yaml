@@ -40,12 +40,15 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_facebook_auth: ^7.1.2
+  flutter_inappwebview: ^6.1.5
   flutter_localizations:
     sdk: flutter
   flutter_svg_provider: ^1.0.7
   get_it: ^9.0.5
   google_sign_in: ^6.2.1
+  http: ^1.6.0
   modal_progress_hud_nsn: ^0.5.1
+  pin_code_fields: ^8.0.1
   provider: ^6.1.5+1
   shared_preferences: ^2.5.3
   skeletonizer: ^2.1.0+1

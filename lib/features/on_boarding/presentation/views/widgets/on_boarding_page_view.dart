@@ -10,7 +10,6 @@ class OnBoardingPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageView(
-      
       controller: pageController,
       children: [
         PageViewItem(
@@ -20,16 +19,25 @@ class OnBoardingPageView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("مرحبًا بك في", style: TextStyles.bold23),
-              Text(" Store", style: TextStyles.bold23.copyWith(color: AppColors.secondaryColor)),
-              Text("Fruit", style: TextStyles.bold23.copyWith(color: AppColors.primaryColor)),
+              Text(
+                " Store",
+                style: TextStyles.bold23.copyWith(
+                  color: AppColors.secondaryColor,
+                ),
+              ),
+              Text(
+                "Fruit",
+                style: TextStyles.bold23.copyWith(
+                  color: AppColors.primaryColor,
+                ),
+              ),
             ],
           ),
           subtitle:
               "اكتشف تجربة تسوق فريدة مع FruitHUB. استكشف مجموعتنا الواسعة من الفواكه الطازجة الممتازة واحصل على أفضل العروض والجودة العالية.",
-          isvisible:
-              true,
+          isvisible: true,
         ),
-        
+
         PageViewItem(
           image: Assets.imagesPageViewItem2Image,
           backgroundImage: Assets.imagesPageViewItem2Background,
@@ -45,8 +53,7 @@ class OnBoardingPageView extends StatelessWidget {
           ),
           subtitle:
               "نقدم لك أفضل الفواكه المختارة بعناية. اطلع على التفاصيل والصور والتقييمات لتتأكد من اختيار الفاكهة المثالية",
-          isvisible:
-             false,
+          isvisible: false,
         ),
       ],
     );

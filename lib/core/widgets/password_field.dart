@@ -18,14 +18,14 @@ class _PasswordFieldState extends State<PasswordField> {
         widget.onsaved!(value);
       },
       suffixIcon: GestureDetector(
-        onTap: () { 
+        onTap: () {
           obscureText = !obscureText;
-          setState(() {
-            
-          });
+          setState(() {});
         },
-        child: obscureText ?  Icon(Icons.remove_red_eye, color: Color(0xffc9cecf)) : 
-        Icon(Icons.visibility_off, color: Color(0xffc9cecf)) ,
+        child:
+            obscureText
+                ? Icon(Icons.remove_red_eye, color: Color(0xffc9cecf))
+                : Icon(Icons.visibility_off, color: Color(0xffc9cecf)),
       ),
       hintText: 'كلمة المرور',
       obscureText: obscureText,

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/core/helper_functions/build_error_bar.dart';
 import 'package:myapp/core/widgets/custom_progress_hud.dart';
 import 'package:myapp/features/auth/presentation/cubits/signin_cubit/signin_cubit.dart';
+import 'package:myapp/features/auth/presentation/views/home_view.dart';
 import 'package:myapp/features/auth/presentation/views/widgets/signin_view_body.dart';
-import 'package:myapp/features/home/presentation/views/main_view.dart';
 
 class SigninViewBodyBlocConsumer extends StatelessWidget {
   const SigninViewBodyBlocConsumer({super.key});
@@ -15,7 +15,7 @@ class SigninViewBodyBlocConsumer extends StatelessWidget {
       listener: (context, state) {
         if (state is SigninSuccess) {
           // add data user to shared preferences
-          Navigator.of(context).pushReplacementNamed(MainView.routeName);
+          Navigator.of(context).pushReplacementNamed(HomeView.routeName);
         }
         if (state is SigninFailure) {
           showErrorBar(context, state.message);

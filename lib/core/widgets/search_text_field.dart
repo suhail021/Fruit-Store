@@ -15,7 +15,7 @@ class SearchTextField extends StatelessWidget {
             color: Color(0x0a000000),
             blurRadius: 9,
             offset: const Offset(0, 2),
-            spreadRadius: 0
+            spreadRadius: 0,
           ),
         ],
       ),
@@ -33,7 +33,7 @@ class SearchTextField extends StatelessWidget {
           hintStyle: TextStyles.regular13.copyWith(
             color: const Color(0xff949d9e),
           ),
-      
+
           hintText: 'ابحث عن.......',
           filled: true,
           fillColor: Colors.white,

@@ -7,9 +7,7 @@ void showErrorBar(BuildContext context, String message) {
       backgroundColor: Colors.red.shade600,
       elevation: 8,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       duration: const Duration(seconds: 3),
       content: Row(
         children: [

@@ -1,29 +1,34 @@
+// lib/core/di/dependency_injection.dart
 import 'package:get_it/get_it.dart';
-import 'package:myapp/core/repos/orders_repo/orders_repo.dart';
-import 'package:myapp/core/repos/orders_repo/orders_repo_impl.dart';
-import 'package:myapp/core/repos/products_repo/products_repo.dart';
-import 'package:myapp/core/repos/products_repo/products_repo_impl.dart';
-import 'package:myapp/core/services/database_service.dart';
-import 'package:myapp/core/services/firebase_auth_service.dart';
-import 'package:myapp/core/services/firestore_service.dart';
+import 'package:http/http.dart' as http;
+import 'package:myapp/core/services/api_service.dart';
 import 'package:myapp/features/auth/data/repos/authr_repo_impl.dart';
 import 'package:myapp/features/auth/domain/repos/auth_repo.dart';
+import 'package:myapp/features/auth/presentation/cubits/otp_verification/otp_verification_cubit.dart';
+import 'package:myapp/features/auth/presentation/cubits/signup_cubit/signup_cubit.dart';
 
 final getIt = GetIt.instance;
 
-void setupGetIt() {
-  getIt.registerSingleton<FirebaseAuthService>(FirebaseAuthService());
-  getIt.registerSingleton<DatabaseService>(FirestoreService());
-  getIt.registerSingleton<AuthRepo>(
-    AuthrRepoImpl(
-      firebaseAuthService: getIt<FirebaseAuthService>(),
-      databaseService: getIt<DatabaseService>(),
-    ),
+void setupServiceLocator() {
+  // External
+  getIt.registerLazySingleton<http.Client>(() => http.Client());
+
+  // Core Services
+  getIt.registerLazySingleton<ApiService>(
+    () => ApiService(client: getIt<http.Client>()),
   );
-  getIt.registerSingleton<ProductsRepo>(
-    ProductsRepoImpl(getIt<DatabaseService>()),
+
+  // Repositories
+  getIt.registerLazySingleton<AuthRepo>(
+    () => AuthRepoImpl(apiService: getIt<ApiService>()),
   );
-  getIt.registerSingleton<OrdersRepo>(
-    OrdersRepoImpl(getIt<DatabaseService>()),
+
+  // Cubits
+  getIt.registerFactory<SignupCubit>(
+    () => SignupCubit(getIt<AuthRepo>()),
+  );
+  
+  getIt.registerFactory<OtpVerificationCubit>(
+    () => OtpVerificationCubit(getIt<AuthRepo>()),
   );
 }

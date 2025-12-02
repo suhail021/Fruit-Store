@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class CustomBlocObserver extends BlocObserver {
-
   @override
   void onTransition(BlocBase bloc, Transition transition) {
     super.onChange(bloc, transition);
@@ -13,6 +11,7 @@ class CustomBlocObserver extends BlocObserver {
       log('${bloc.runtimeType} $transition');
     }
   }
+
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);

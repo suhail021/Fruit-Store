@@ -4,7 +4,6 @@ import 'package:myapp/core/services/firebase_auth_service.dart';
 import 'package:myapp/core/services/shared_preferences_singleton.dart';
 import 'package:myapp/core/utils/app_images.dart';
 import 'package:myapp/features/auth/presentation/views/signin_view.dart';
-import 'package:myapp/features/home/presentation/views/main_view.dart';
 import 'package:myapp/features/on_boarding/presentation/views/on_boarding_view.dart';
 import 'package:svg_flutter/svg.dart';
 
@@ -42,12 +41,7 @@ class _SplashViewBodyState extends State<SplashViewBody> {
     bool isOnBoardingViewSeen = Prefs.getBool(kIsOnBoardingViewSeen);
     Future.delayed(const Duration(seconds: 3), () {
       if (isOnBoardingViewSeen) {
-        var isLoggedIn = FirebaseAuthService().isLoggedIn();
-        if (isLoggedIn) {
-          Navigator.pushReplacementNamed(context, MainView.routeName);
-        } else {
-          Navigator.pushReplacementNamed(context, SigninView.routeName);
-        }
+        Navigator.pushReplacementNamed(context, SigninView.routeName);
       } else {
         Navigator.pushReplacementNamed(context, OnBoardingView.routeName);
       }

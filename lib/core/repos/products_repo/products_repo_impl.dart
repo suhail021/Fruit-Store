@@ -9,7 +9,7 @@ import 'package:myapp/core/utils/backend_endpoint.dart';
 class ProductsRepoImpl extends ProductsRepo {
   final DatabaseService databaseService;
 
-  ProductsRepoImpl( this.databaseService);
+  ProductsRepoImpl(this.databaseService);
   @override
   Future<Either<Failure, List<ProductEntity>>> getBestSellingProducts() async {
     try {

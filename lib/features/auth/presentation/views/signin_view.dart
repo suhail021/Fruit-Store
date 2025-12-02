@@ -20,7 +20,7 @@ class SigninView extends StatelessWidget {
           title: 'تسجيل الدخول',
           showBackIcon: false,
         ),
-        body: SigninViewBodyBlocConsumer()
+        body: SigninViewBodyBlocConsumer(),
       ),
     );
   }

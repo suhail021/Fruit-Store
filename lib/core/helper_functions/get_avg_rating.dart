@@ -1,6 +1,5 @@
 import 'package:myapp/core/models/review_model.dart';
 
-
 num getAvgRating(List<ReviewModel> reviews) {
   var sum = 0.0;
   for (var review in reviews) {

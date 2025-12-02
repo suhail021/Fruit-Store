@@ -19,7 +19,7 @@ class HaveAccount extends StatelessWidget {
             recognizer:
                 TapGestureRecognizer()
                   ..onTap = () {
-                  Navigator.pop(context);
+                    Navigator.pop(context);
                   },
             text: 'تسجيل الدخول',
             style: TextStyles.semibold16.copyWith(
