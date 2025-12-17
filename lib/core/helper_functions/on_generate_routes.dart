@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/features/auth/presentation/views/signin_view.dart';
 import 'package:myapp/features/auth/presentation/views/signup_view.dart';
 import 'package:myapp/features/auth/presentation/views/otp_verification_view.dart';
+import 'package:myapp/features/home/presentation/views/cart_view.dart';
+import 'package:myapp/features/home/presentation/views/favorites_view.dart';
 import 'package:myapp/features/home/presentation/views/home_view.dart'; // ✅ إضافة
 import 'package:myapp/features/home/presentation/views/main_view.dart';
 import 'package:myapp/features/on_boarding/presentation/views/on_boarding_view.dart';
@@ -36,10 +38,15 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
 
     case SignupView.routeName:
       return MaterialPageRoute(builder: (context) => const SignupView());
+
+    case FavoritesView.routeName:
+      return MaterialPageRoute(builder: (context) => const FavoritesView());
     case HomeView.routeName: // ✅ إضافة
       return MaterialPageRoute(builder: (context) => const HomeView());
     case MainView.routeName: // ✅ إضافة
       return MaterialPageRoute(builder: (context) => const MainView());
+    case CartView.routeName: // ✅ إضافة
+      return MaterialPageRoute(builder: (context) => const CartView());
 
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());

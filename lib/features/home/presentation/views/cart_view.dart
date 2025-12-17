@@ -5,7 +5,7 @@ import 'package:myapp/features/home/presentation/views/widgets/cart_view_body.da
 
 class CartView extends StatelessWidget {
   const CartView({super.key});
-
+ static const String routeName = 'home';
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

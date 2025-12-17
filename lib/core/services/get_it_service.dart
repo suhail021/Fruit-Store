@@ -1,7 +1,10 @@
 // lib/core/services/get_it_service.dart
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:myapp/core/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:myapp/core/cubits/products_cubit/products_cubit.dart';
+import 'package:myapp/core/repos/favorites_repo/favorites_repo.dart';
+import 'package:myapp/core/repos/favorites_repo/favorites_repo_impl.dart';
 import 'package:myapp/core/repos/orders_repo/orders_repo.dart';
 import 'package:myapp/core/repos/orders_repo/orders_repo_impl.dart';
 import 'package:myapp/core/repos/products_repo/products_repo.dart';
@@ -48,8 +51,13 @@ void setupGetIt() {
     () => OrdersRepoImpl(apiService: getIt<ApiService>()),
   );
 
+  // ✅ Favorites Repository (بدون ApiService - تخزين محلي)
+  getIt.registerLazySingleton<FavoritesRepo>(
+    () => FavoritesRepoImpl(apiService: getIt<ApiService>()),
+  );
+
   // ==========================================
-  // Cubits - Factory (يتم إنشاء instance جديد في كل مرة)
+  // Cubits
   // ==========================================
   
   // Auth Cubits
@@ -70,8 +78,13 @@ void setupGetIt() {
     () => ProductsCubit(getIt<ProductsRepo>()),
   );
 
-  // Checkout Cubit
+  // Orders Cubit
   getIt.registerFactory<AddOrderCubit>(
     () => AddOrderCubit(getIt<OrdersRepo>()),
+  );
+
+  // ✅ Favorites Cubit
+  getIt.registerFactory<FavoritesCubit>(
+    () => FavoritesCubit(getIt<FavoritesRepo>()),
   );
 }

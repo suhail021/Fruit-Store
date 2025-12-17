@@ -1,201 +1,330 @@
-// lib/features/auth/data/models/user_model.dart
-import 'package:myapp/features/auth/domain/entities/user_entity.dart';
+// lib/features/auth/data/models/login_response_model.dart
+import 'package:myapp/features/auth/data/model/user_model.dart';
 
+class LoginResponseModel {
+  final bool success;
+  final String message;
+  final String? token;
+  final UserModel? user;
+  final List<AddressData>? addresses;
+  final List<FavoriteData>? favorites;
+  final InvoicesData? invoices;
+  final CouponsData? coupons;
+  final List<dynamic>? notifications;
+  final List<AnnouncementData>? announcements;
+  final List<ChatRoomData>? chatRooms;
+  final ReferralData? referralData;
+  final StatsData? stats;
 
-
-class UserModel extends UserEntity {
-  UserModel({
-    super.idUser,
-    required super.name,
-    required super.phoneNumber,
-    super.gender,
-    super.balance,
-    super.otpVerified,
-    super.actv,
-    super.referralCode,
-    super.createdAt,
-    super.updatedAt,
-    super.role,
-    super.currency,
-    super.level,
+  LoginResponseModel({
+    required this.success,
+    required this.message,
+    this.token,
+    this.user,
+    this.addresses,
+    this.favorites,
+    this.invoices,
+    this.coupons,
+    this.notifications,
+    this.announcements,
+    this.chatRooms,
+    this.referralData,
+    this.stats,
   });
 
-  // ✅ factory واحد فقط
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      idUser: json['id_user'] as int?,
-      name: json['name'] as String,
-      phoneNumber: json['phone_number'] as String,
-      gender: json['gender'] as String?,
-      balance: _parseDouble(json['balance']),
-      otpVerified: json['otp_verified'] as bool?,
-      actv: json['actv'] as bool?,
-      referralCode: json['referral_code'] as String?,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
-          : null,
-      role: json['role'] != null 
-          ? RoleModel.fromJson(json['role']) 
-          : null,
-      currency: json['currency'] != null
-          ? CurrencyModel.fromJson(json['currency'])
-          : null,
-      level: json['level'] != null 
-          ? LevelModel.fromJson(json['level']) 
-          : null,
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
+    return LoginResponseModel(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+      token: json['token'] as String?,
+      user:
+          json['user'] != null
+              ? UserModel.fromJson(json['user'] as Map<String, dynamic>)
+              : null,
+      addresses:
+          json['addresses'] != null
+              ? (json['addresses'] as List)
+                  .map((e) => AddressData.fromJson(e))
+                  .toList()
+              : null,
+      favorites:
+          json['favorites'] != null
+              ? (json['favorites'] as List)
+                  .map((e) => FavoriteData.fromJson(e))
+                  .toList()
+              : null,
+      invoices:
+          json['invoices'] != null
+              ? InvoicesData.fromJson(json['invoices'])
+              : null,
+      coupons:
+          json['coupons'] != null
+              ? CouponsData.fromJson(json['coupons'])
+              : null,
+      notifications: json['notifications'] as List?,
+      announcements:
+          json['announcements'] != null
+              ? (json['announcements'] as List)
+                  .map((e) => AnnouncementData.fromJson(e))
+                  .toList()
+              : null,
+      chatRooms:
+          json['chat_rooms'] != null
+              ? (json['chat_rooms'] as List)
+                  .map((e) => ChatRoomData.fromJson(e))
+                  .toList()
+              : null,
+      referralData:
+          json['referral_data'] != null
+              ? ReferralData.fromJson(json['referral_data'])
+              : null,
+      stats: json['stats'] != null ? StatsData.fromJson(json['stats']) : null,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id_user': idUser,
-      'name': name,
-      'phone_number': phoneNumber,
-      'gender': gender,
-      'balance': balance,
-      'otp_verified': otpVerified,
-      'actv': actv,
-      'referral_code': referralCode,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-      'role': role != null ? (role as RoleModel).toJson() : null,
-      'currency': currency != null ? (currency as CurrencyModel).toJson() : null,
-      'level': level != null ? (level as LevelModel).toJson() : null,
-    };
-  }
-
-  factory UserModel.fromEntity(UserEntity entity) {
-    return UserModel(
-      idUser: entity.idUser,
-      name: entity.name,
-      phoneNumber: entity.phoneNumber,
-      gender: entity.gender,
-      balance: entity.balance,
-      otpVerified: entity.otpVerified,
-      actv: entity.actv,
-      referralCode: entity.referralCode,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-      role: entity.role,
-      currency: entity.currency,
-      level: entity.level,
-    );
-  }
-
-  UserEntity toEntity() {
-    return UserEntity(
-      idUser: idUser,
-      name: name,
-      phoneNumber: phoneNumber,
-      gender: gender,
-      balance: balance,
-      otpVerified: otpVerified,
-      actv: actv,
-      referralCode: referralCode,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      role: role,
-      currency: currency,
-      level: level,
-    );
-  }
-
-  // ✅ دالة مساعدة واحدة
-  static double? _parseDouble(dynamic value) {
-    if (value == null) return null;
-    if (value is double) return value;
-    if (value is int) return value.toDouble();
-    if (value is String) return double.tryParse(value);
-    return null;
   }
 }
 
-// ==========================================
-// Role Model
-// ==========================================
-class RoleModel extends RoleEntity {
-  RoleModel({required super.idRole, required super.name});
+// Address Data
+class AddressData {
+  final int idAddresses;
+  final String country;
+  final String city;
+  final String? street;
+  final String? postalCode;
+  final bool isDefault;
+  final String? descriptionAddresses;
 
-  factory RoleModel.fromJson(Map<String, dynamic> json) {
-    return RoleModel(
-      idRole: json['id_role'] as int,
-      name: json['name'] as String,
+  AddressData({
+    required this.idAddresses,
+    required this.country,
+    required this.city,
+    this.street,
+    this.postalCode,
+    required this.isDefault,
+    this.descriptionAddresses,
+  });
+
+  factory AddressData.fromJson(Map<String, dynamic> json) {
+    return AddressData(
+      idAddresses: json['id_addresses'] as int,
+      country: json['country'] as String,
+      city: json['city'] as String,
+      street: json['street'] as String?,
+      postalCode: json['postal_code'] as String?,
+      isDefault: json['is_default'] as bool,
+      descriptionAddresses: json['description_addresses'] as String?,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id_role': idRole,
-      'name': name,
-    };
   }
 }
 
-// ==========================================
-// Currency Model
-// ==========================================
-class CurrencyModel extends CurrencyEntity {
-  CurrencyModel({
-    required super.idCurrencies,
-    required super.name,
-    super.symbol,
+// Favorite Data
+class FavoriteData {
+  final int idFavorites;
+  final String productName;
+  final String? productDescription;
+  final String? img;
+  final String productLink;
+  final DateTime createdAt;
+
+  FavoriteData({
+    required this.idFavorites,
+    required this.productName,
+    this.productDescription,
+    this.img,
+    required this.productLink,
+    required this.createdAt,
   });
 
-  factory CurrencyModel.fromJson(Map<String, dynamic> json) {
-    return CurrencyModel(
-      idCurrencies: json['id_currencies'] as int,
-      name: json['name'] as String,
-      symbol: json['symbol'] as String?,
+  factory FavoriteData.fromJson(Map<String, dynamic> json) {
+    return FavoriteData(
+      idFavorites: json['id_favorites'] as int,
+      productName: json['product_name'] as String,
+      productDescription: json['product_description'] as String?,
+      img: json['img'] as String?,
+      productLink: json['product_link'] as String,
+      createdAt: DateTime.parse(json['created_at']),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id_currencies': idCurrencies,
-      'name': name,
-      'symbol': symbol,
-    };
   }
 }
 
-// ==========================================
-// Level Model
-// ==========================================
-class LevelModel extends LevelEntity {
-  LevelModel({
-    required super.idLevel,
-    required super.name,
-    required super.minValue,
-    required super.maxValue,
-    super.icon,
-    super.badgeColor,
+// Invoices Data
+class InvoicesData {
+  final List<dynamic> incomplete;
+  final List<dynamic> pendingVerification;
+  final List<dynamic> completed;
+
+  InvoicesData({
+    required this.incomplete,
+    required this.pendingVerification,
+    required this.completed,
   });
 
-  factory LevelModel.fromJson(Map<String, dynamic> json) {
-    return LevelModel(
-      idLevel: json['id_level'] as int,
-      name: json['name'] as String,
-      minValue: json['min_value'] as String,
-      maxValue: json['max_value'] as String,
-      icon: json['icon'] as String?,
-      badgeColor: json['badge_color'] as String?,
+  factory InvoicesData.fromJson(Map<String, dynamic> json) {
+    return InvoicesData(
+      incomplete: json['incomplete'] as List? ?? [],
+      pendingVerification: json['pending_verification'] as List? ?? [],
+      completed: json['completed'] as List? ?? [],
     );
   }
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id_level': idLevel,
-      'name': name,
-      'min_value': minValue,
-      'max_value': maxValue,
-      'icon': icon,
-      'badge_color': badgeColor,
-    };
-    
+// Coupons Data
+class CouponsData {
+  final List<CouponItem> referral;
+  final List<CouponItem> general;
+
+  CouponsData({required this.referral, required this.general});
+
+  factory CouponsData.fromJson(Map<String, dynamic> json) {
+    return CouponsData(
+      referral:
+          json['referral'] != null
+              ? (json['referral'] as List)
+                  .map((e) => CouponItem.fromJson(e))
+                  .toList()
+              : [],
+      general:
+          json['general'] != null
+              ? (json['general'] as List)
+                  .map((e) => CouponItem.fromJson(e))
+                  .toList()
+              : [],
+    );
   }
-  
-  
+}
+
+class CouponItem {
+  final int idCoupon;
+  final String code;
+  final String name;
+  final String discountText;
+  final String type;
+  final DateTime? grantedAt;
+  final DateTime? expiresAt;
+
+  CouponItem({
+    required this.idCoupon,
+    required this.code,
+    required this.name,
+    required this.discountText,
+    required this.type,
+    this.grantedAt,
+    this.expiresAt,
+  });
+
+  factory CouponItem.fromJson(Map<String, dynamic> json) {
+    return CouponItem(
+      idCoupon: json['id_coupon'] as int,
+      code: json['code'] as String,
+      name: json['name'] as String,
+      discountText: json['discount_text'] as String,
+      type: json['type'] as String,
+      grantedAt:
+          json['granted_at'] != null
+              ? DateTime.parse(json['granted_at'])
+              : null,
+      expiresAt:
+          json['expires_at'] != null
+              ? DateTime.parse(json['expires_at'])
+              : null,
+    );
+  }
+}
+
+// Announcement Data
+class AnnouncementData {
+  final int id;
+  final String title;
+  final String body;
+  final String type;
+  final String typeLabel;
+  final String typeColor;
+  final bool isRead;
+
+  AnnouncementData({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.type,
+    required this.typeLabel,
+    required this.typeColor,
+    required this.isRead,
+  });
+
+  factory AnnouncementData.fromJson(Map<String, dynamic> json) {
+    return AnnouncementData(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      body: json['body'] as String,
+      type: json['type'] as String,
+      typeLabel: json['type_label'] as String,
+      typeColor: json['type_color'] as String,
+      isRead: json['is_read'] as bool,
+    );
+  }
+}
+
+// Chat Room Data
+class ChatRoomData {
+  final int idRoom;
+  final String title;
+  final int unreadCount;
+
+  ChatRoomData({
+    required this.idRoom,
+    required this.title,
+    required this.unreadCount,
+  });
+
+  factory ChatRoomData.fromJson(Map<String, dynamic> json) {
+    return ChatRoomData(
+      idRoom: json['id_room'] as int,
+      title: json['title'] as String,
+      unreadCount: json['unread_count'] as int,
+    );
+  }
+}
+
+// Referral Data
+class ReferralData {
+  final String myCode;
+  final int totalReferrals;
+  final int completedReferrals;
+  final double totalRewards;
+
+  ReferralData({
+    required this.myCode,
+    required this.totalReferrals,
+    required this.completedReferrals,
+    required this.totalRewards,
+  });
+
+  factory ReferralData.fromJson(Map<String, dynamic> json) {
+    return ReferralData(
+      myCode: json['my_code'] as String,
+      totalReferrals: json['total_referrals'] as int,
+      completedReferrals: json['completed_referrals'] as int,
+      totalRewards: (json['total_rewards'] as num).toDouble(),
+    );
+  }
+}
+
+// Stats Data
+class StatsData {
+  final int totalOrders;
+  final int completedOrders;
+  final String totalSpent;
+
+  StatsData({
+    required this.totalOrders,
+    required this.completedOrders,
+    required this.totalSpent,
+  });
+
+  factory StatsData.fromJson(Map<String, dynamic> json) {
+    return StatsData(
+      totalOrders: json['total_orders'] as int,
+      completedOrders: json['completed_orders'] as int,
+      totalSpent: json['total_spent'].toString(),
+    );
+  }
 }
