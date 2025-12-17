@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -9,18 +9,24 @@ import 'package:myapp/core/services/get_it_service.dart';
 import 'package:myapp/core/services/shared_preferences_singleton.dart';
 import 'package:myapp/core/utils/app_colors.dart';
 import 'package:myapp/features/splash/presentation/views/splash_view.dart';
-import 'package:myapp/firebase_options.dart';
 import 'package:myapp/generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // WebView Debugging
   await InAppWebViewController.setWebContentsDebuggingEnabled(true);
-  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Bloc Observer
   Bloc.observer = CustomBlocObserver();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  WidgetsFlutterBinding.ensureInitialized();
+
+  
+  // SharedPreferences
   await Prefs.init();
-  setupServiceLocator();
+  
+  // Dependency Injection
+  setupGetIt();
+  
   runApp(const FruitApp());
 }
 
@@ -35,7 +41,7 @@ class FruitApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
         fontFamily: 'Cairo',
       ),
-      localizationsDelegates: [
+      localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

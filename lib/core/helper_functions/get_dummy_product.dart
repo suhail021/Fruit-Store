@@ -1,28 +1,21 @@
+// lib/core/helper_functions/get_dummy_product.dart
 import 'package:myapp/core/entities/product_entity.dart';
 
 ProductEntity getDummyProduct() {
   return ProductEntity(
-    name: 'Apple',
-    code: '123',
-    description: 'Fresh apple',
-    price: 2.5,
-    reviews: [],
-    expirationsMonths: 6,
-    numberOfCalories: 100,
-    unitAmount: 1,
-    isOrganic: true,
-    isFeatured: true,
-    imageUrl: null,
+    id: 1,
+    name: 'منتج تجريبي',
+    description: 'وصف المنتج',
+    img: null,
+    price: 100.0,
+    discountPrice: null,
+    finalPrice: 100.0,
+    quantity: 10,
+    status: 'active',
+    isAvailable: true,
   );
 }
 
 List<ProductEntity> getDummyProducts() {
-  return [
-    getDummyProduct(),
-    getDummyProduct(),
-    getDummyProduct(),
-    getDummyProduct(),
-    getDummyProduct(),
-    getDummyProduct(),
-  ];
+  return List.generate(6, (index) => getDummyProduct());
 }

@@ -6,6 +6,7 @@ import 'package:myapp/core/helper_functions/build_error_bar.dart';
 import 'package:myapp/core/widgets/custom_button.dart';
 import 'package:myapp/core/widgets/custom_progress_hud.dart';
 import 'package:myapp/features/auth/presentation/cubits/otp_verification/otp_verification_cubit.dart';
+import 'package:myapp/features/home/presentation/views/main_view.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpVerificationViewBody extends StatefulWidget {
@@ -42,11 +43,10 @@ class _OtpVerificationViewBodyState extends State<OtpVerificationViewBody> {
           // الانتقال للصفحة الرئيسية
           Navigator.pushNamedAndRemoveUntil(
             context,
-            '/home', // غير هذا حسب اسم صفحتك الرئيسية
+            MainView.routeName,
             (route) => false,
           );
         }
-
         // فشل التحقق
         if (state is OtpVerificationFailure) {
           showErrorBar(context, state.message);
@@ -105,10 +105,7 @@ class _OtpVerificationViewBodyState extends State<OtpVerificationViewBody> {
                     Text(
                       'أدخل رمز التحقق المرسل إلى',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -156,14 +153,11 @@ class _OtpVerificationViewBodyState extends State<OtpVerificationViewBody> {
                       onPressed: () {
                         if (otpCode.length == 6) {
                           context.read<OtpVerificationCubit>().verifyOtp(
-                                phoneNumber: widget.phoneNumber,
-                                otp: otpCode,
-                              );
-                        } else {
-                          showErrorBar(
-                            context,
-                            'يرجى إدخال رمز التحقق كاملاً',
+                            phoneNumber: widget.phoneNumber,
+                            otp: otpCode,
                           );
+                        } else {
+                          showErrorBar(context, 'يرجى إدخال رمز التحقق كاملاً');
                         }
                       },
                       text: 'تحقق',
@@ -174,8 +168,8 @@ class _OtpVerificationViewBodyState extends State<OtpVerificationViewBody> {
                     TextButton(
                       onPressed: () {
                         context.read<OtpVerificationCubit>().resendOtp(
-                              phoneNumber: widget.phoneNumber,
-                            );
+                          phoneNumber: widget.phoneNumber,
+                        );
                       },
                       child: const Text(
                         'لم يصلك الرمز؟ إعادة الإرسال',

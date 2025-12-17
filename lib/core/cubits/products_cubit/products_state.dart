@@ -1,22 +1,21 @@
+// lib/core/cubits/products_cubit/products_state.dart
 part of 'products_cubit.dart';
 
-sealed class ProductsState extends Equatable {
-  const ProductsState();
-  @override
-  List<Object> get props => [];
-}
+@immutable
+sealed class ProductsState {}
 
 final class ProductsInitial extends ProductsState {}
 
 final class ProductsLoading extends ProductsState {}
 
-final class ProductsFailure extends ProductsState {
-  final String errMessage;
-  const ProductsFailure({required this.errMessage});
-}
-
-final class ProductsSussecc extends ProductsState {
+final class ProductsSuccess extends ProductsState {
   final List<ProductEntity> products;
 
-  ProductsSussecc(this.products);
+  ProductsSuccess({required this.products});
+}
+
+final class ProductsFailure extends ProductsState {
+  final String errMessage;
+
+  ProductsFailure({required this.errMessage});
 }

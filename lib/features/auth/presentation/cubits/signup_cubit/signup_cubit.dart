@@ -1,4 +1,5 @@
-// lib/features/auth/presentation/cubits/signup/signup_cubit.dart
+// lib/features/auth/presentation/cubits/signup_cubit/signup_cubit.dart
+import 'dart:developer'; // ✅ إضافة
 import 'package:bloc/bloc.dart';
 import 'package:myapp/features/auth/domain/entities/user_entity.dart';
 import 'package:myapp/features/auth/domain/repos/auth_repo.dart';
@@ -20,6 +21,8 @@ class SignupCubit extends Cubit<SignupState> {
   }) async {
     emit(SignupLoading());
 
+    log('📝 Registering user: $phoneNumber');
+
     final result = await authRepo.register(
       name: name,
       phoneNumber: phoneNumber,
@@ -30,12 +33,25 @@ class SignupCubit extends Cubit<SignupState> {
     );
 
     result.fold(
-      (failure) => emit(SignupFailure(message: failure.message)),
+      (failure) {
+        log('❌ Registration failed: ${failure.message}');
+        emit(SignupFailure(message: failure.message));
+      },
       (data) {
+        // ✅ Logging للتحقق من البيانات
+        log('✅ Registration response data: $data');
+        log('   - user: ${data['user']}');
+        log('   - otp_required: ${data['otp_required']}');
+        log('   - message: ${data['message']}');
+
+        final user = data['user'] as UserEntity?;
+        final otpRequired = data['otp_required'] as bool? ?? true; // ✅ افتراضياً true
+
         emit(SignupSuccess(
-          user: data['user'] as UserEntity?,
+          user: user,
           message: data['message'] as String,
-          otpRequired: data['otp_required'] as bool,
+          otpRequired: otpRequired,
+          phoneNumber: phoneNumber, // ✅ حفظ رقم الهاتف
         ));
       },
     );

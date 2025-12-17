@@ -1,16 +1,13 @@
-import 'dart:io';
-
+// lib/features/auth/presentation/views/widgets/signin_view_body.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/constants.dart';
-import 'package:myapp/core/utils/app_images.dart';
 import 'package:myapp/core/widgets/custom_button.dart';
 import 'package:myapp/core/widgets/custome_text_form_field.dart';
 import 'package:myapp/core/widgets/password_field.dart';
 import 'package:myapp/features/auth/presentation/cubits/signin_cubit/signin_cubit.dart';
 import 'package:myapp/features/auth/presentation/views/widgets/dont_have_account.dart';
 import 'package:myapp/features/auth/presentation/views/widgets/or_divider.dart';
-import 'package:myapp/features/auth/presentation/views/widgets/social_login_button.dart';
 
 class SigninViewBody extends StatefulWidget {
   const SigninViewBody({super.key});
@@ -19,11 +16,13 @@ class SigninViewBody extends StatefulWidget {
   State<SigninViewBody> createState() => _SigninViewBodyState();
 }
 
-final GlobalKey<FormState> formkey = GlobalKey<FormState>();
-AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-late String email, password;
-
 class _SigninViewBodyState extends State<SigninViewBody> {
+  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  
+  late String phoneNumber;
+  late String password;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -31,57 +30,77 @@ class _SigninViewBodyState extends State<SigninViewBody> {
       child: Form(
         key: formkey,
         autovalidateMode: autovalidateMode,
-
         child: Column(
           children: [
             const SizedBox(height: 24),
+            
+            // حقل رقم الهاتف
             CustomeTextFormField(
               onSaved: (value) {
-                email = value!;
+                phoneNumber = value!;
               },
-              hintText: 'البريد الالكتروني ',
-              textInputType: TextInputType.emailAddress,
-              suffixIcon: Icon(Icons.phone, color: Color(0xffc9cecf)),
+              hintText: 'رقم الهاتف',
+              textInputType: TextInputType.phone,
+              suffixIcon: const Icon(
+                Icons.phone,
+                color: Color(0xffc9cecf),
+              ),
             ),
             const SizedBox(height: 16),
 
+            // حقل كلمة المرور
             PasswordField(
               onsaved: (value) {
                 password = value!;
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            SizedBox(height: 33),
+            // يمكنك إضافة "نسيت كلمة المرور؟"
+            // Align(
+            //   alignment: Alignment.centerLeft,
+            //   child: TextButton(
+            //     onPressed: () {
+            //       // Navigate to forgot password
+            //     },
+            //     child: const Text('نسيت كلمة المرور؟'),
+            //   ),
+            // ),
 
+            const SizedBox(height: 33),
+
+            // زر تسجيل الدخول
             CustomButton(
-              onPressed: () {
-                if (formkey.currentState!.validate()) {
-                  formkey.currentState!.save();
-                  // context.read<SigninCubit>().signin(email, password);
-                } else {
-                  autovalidateMode = AutovalidateMode.always;
-                  setState(() {});
-                }
-              },
+              onPressed: _handleLogin,
               text: "تسجيل الدخول",
             ),
-            SizedBox(height: 33),
+            const SizedBox(height: 33),
 
             const DontHaveAccount(),
-            SizedBox(height: 33),
+            const SizedBox(height: 33),
 
             const OrDivider(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-       
-            SizedBox(height: 16),
-
+            // يمكنك إضافة أزرار تسجيل الدخول الاجتماعي هنا
             
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
+  }
+
+  void _handleLogin() {
+    if (formkey.currentState!.validate()) {
+      formkey.currentState!.save();
+      
+      // تسجيل الدخول
+      context.read<SigninCubit>().login(phoneNumber, password);
+    } else {
+      setState(() {
+        autovalidateMode = AutovalidateMode.always;
+      });
+    }
   }
 }

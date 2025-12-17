@@ -21,17 +21,17 @@ class SignupViewBody extends StatefulWidget {
 class _SignupViewBodyState extends State<SignupViewBody> {
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  
+
   // المتغيرات المطلوبة للتسجيل
-  late String name;              // الاسم
-  late String phoneNumber;       // رقم الهاتف
-  late String password;          // كلمة المرور
-  String? gender;                // الجنس (male/female)
-  bool isTermsAccepted = false;  // الموافقة على الشروط
-  
+  late String name; // الاسم
+  late String phoneNumber; // رقم الهاتف
+  late String password; // كلمة المرور
+  String? gender; // الجنس (male/female)
+  bool isTermsAccepted = false; // الموافقة على الشروط
+
   // القيم الثابتة (يمكن تغييرها حسب الحاجة)
-  final int idRole = 1;          // دور المستخدم (1 = عميل عادي)
-  final int idCurrencies = 1;    // العملة الافتراضية
+  final int idRole = 1; // دور المستخدم (1 = عميل عادي)
+  final int idCurrencies = 1; // العملة الافتراضية
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
           child: Column(
             children: [
               const SizedBox(height: 24),
-              
+
               // 1️⃣ حقل الاسم الكامل
               CustomeTextFormField(
                 onSaved: (value) {
@@ -52,10 +52,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                 },
                 hintText: 'الاسم الكامل',
                 textInputType: TextInputType.name,
-                suffixIcon: const Icon(
-                  Icons.person,
-                  color: Color(0xffc9cecf),
-                ),
+                suffixIcon: const Icon(Icons.person, color: Color(0xffc9cecf)),
               ),
               const SizedBox(height: 16),
 
@@ -74,10 +71,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                 },
                 hintText: 'رقم الهاتف',
                 textInputType: TextInputType.phone,
-                suffixIcon: const Icon(
-                  Icons.phone,
-                  color: Color(0xffc9cecf),
-                ),
+                suffixIcon: const Icon(Icons.phone, color: Color(0xffc9cecf)),
               ),
               const SizedBox(height: 16),
 
@@ -98,12 +92,9 @@ class _SignupViewBodyState extends State<SignupViewBody> {
               const SizedBox(height: 20),
 
               // 6️⃣ زر إنشاء الحساب
-              CustomButton(
-                onPressed: _handleSignup,
-                text: 'إنشاء حساب جديد',
-              ),
+              CustomButton(onPressed: _handleSignup, text: 'إنشاء حساب جديد'),
               const SizedBox(height: 16),
-              
+
               // 7️⃣ رابط تسجيل الدخول
               const HaveAccount(),
               const SizedBox(height: 16),
@@ -116,33 +107,34 @@ class _SignupViewBodyState extends State<SignupViewBody> {
 
   // دالة معالجة التسجيل
   void _handleSignup() {
-    // التحقق من صحة النموذج
     if (formkey.currentState!.validate()) {
       formkey.currentState!.save();
 
-      // التحقق من اختيار الجنس
       if (gender == null) {
         showErrorBar(context, 'يرجى اختيار الجنس');
         return;
       }
 
-      // التحقق من الموافقة على الشروط
       if (!isTermsAccepted) {
         showErrorBar(context, 'يجب عليك الموافقة على الشروط والأحكام');
         return;
       }
 
-      // إرسال طلب التسجيل
+      // ✅ Logging
+      print('📝 Submitting registration:');
+      print('   Name: $name');
+      print('   Phone: $phoneNumber');
+      print('   Gender: $gender');
+
       context.read<SignupCubit>().register(
-            name: name,
-            phoneNumber: phoneNumber,
-            password: password,
-            gender: gender!,
-            idRole: idRole,
-            idCurrencies: idCurrencies,
-          );
+        name: name,
+        phoneNumber: phoneNumber,
+        password: password,
+        gender: gender!,
+        idRole: idRole,
+        idCurrencies: idCurrencies,
+      );
     } else {
-      // تفعيل التحقق التلقائي في حالة وجود أخطاء
       setState(() {
         autovalidateMode = AutovalidateMode.always;
       });

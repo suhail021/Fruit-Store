@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:myapp/core/errors/custom_exceptions.dart';
-import 'package:myapp/core/utils/backend_endpoint.dart';
+import 'package:myapp/core/utils/api_constants.dart';
 
 class ApiService {
   final http.Client client;
@@ -32,6 +32,9 @@ class ApiService {
       log('📥 Response Body: ${response.body}');
 
       return _handleResponse(response);
+      return _handleResponse(response);
+    } on ServerException {
+      rethrow;
     } catch (e) {
       log('❌ API Error: $e');
       throw ServerException(
@@ -90,6 +93,9 @@ class ApiService {
       log('📥 Response Body: ${response.body}');
 
       return _handleResponse(response);
+      return _handleResponse(response);
+    } on ServerException {
+      rethrow;
     } catch (e) {
       log('❌ API Error: $e');
       throw ServerException(
