@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/features/home/presentation/views/cart_view.dart';
 import 'package:myapp/features/home/presentation/views/favorites_view.dart';
-import 'package:myapp/features/home/presentation/views/product_view.dart';
+import 'package:myapp/features/home/presentation/views/orders_view.dart';
 import 'package:myapp/features/home/presentation/views/shein_view.dart';
 import 'package:myapp/features/home/presentation/views/home_view.dart';
 
@@ -14,9 +14,9 @@ class MainViewBody extends StatelessWidget {
       index: currentViewIndex,
       children: [
         const HomeView(),
-        const ProductView(),
-        const SheinView(),
         const CartView(),
+        const SheinView(),
+        const OrdersView(),
         const FavoritesView(),
       ],
     );

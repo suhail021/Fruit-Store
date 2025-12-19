@@ -24,7 +24,7 @@ class CartEntity {
 
   bool isExis(ProductEntity product) {
     for (var carItem in cartItems) {
-      if (carItem.productEntity == product) {
+      if (carItem.productEntity.code == product.code) {
         return true;
       }
     }
@@ -33,7 +33,7 @@ class CartEntity {
 
   CartItemEntity getCarItem(ProductEntity product) {
     for (var carItem in cartItems) {
-      if (carItem.productEntity == product) {
+      if (carItem.productEntity.code == product.code) {
         return carItem;
       }
     }

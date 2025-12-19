@@ -8,6 +8,7 @@ import 'package:myapp/features/home/presentation/views/favorites_view.dart';
 import 'package:myapp/features/home/presentation/views/home_view.dart'; // ✅ إضافة
 import 'package:myapp/features/home/presentation/views/main_view.dart';
 import 'package:myapp/features/on_boarding/presentation/views/on_boarding_view.dart';
+import 'package:myapp/features/notifications/presentation/views/notifications_view.dart';
 import 'package:myapp/features/splash/presentation/views/splash_view.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -45,8 +46,10 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => const HomeView());
     case MainView.routeName: // ✅ إضافة
       return MaterialPageRoute(builder: (context) => const MainView());
-    case CartView.routeName: // ✅ إضافة
+    case CartView.routeName:
       return MaterialPageRoute(builder: (context) => const CartView());
+    case NotificationsView.routeName:
+      return MaterialPageRoute(builder: (context) => const NotificationsView());
 
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());

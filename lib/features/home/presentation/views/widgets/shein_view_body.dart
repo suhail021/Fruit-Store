@@ -1,7 +1,6 @@
 // shein_view_body.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:myapp/core/utils/app_colors.dart';
 import 'package:myapp/features/home/presentation/views/widgets/custom_home_appbar.dart';
 import 'shein_top_bar.dart';
 import 'shein_webview.dart';
@@ -45,7 +44,7 @@ class _SheinViewBodyState extends State<SheinViewBody> {
                   webViewController = controller;
                 },
                 onProductPageChanged: _setIsProductPage,
-              ),
+                 ),
               // زر الإضافة يظهر فقط على صفحة المنتج
               if (isProductPage)
                 ProductFAB(webViewController: webViewController),

@@ -4,9 +4,7 @@ import 'package:myapp/core/errors/failures.dart';
 
 abstract class OrdersRepo {
   /// إنشاء طلب جديد (فاتورة)
-  Future<Either<Failure, Map<String, dynamic>>> addOrder({
-    required order,
-  });
+  Future<Either<Failure, Map<String, dynamic>>> addOrder({required order});
 
   /// إنشاء طلب من بيانات محددة
   Future<Either<Failure, Map<String, dynamic>>> createOrder({
@@ -33,5 +31,40 @@ abstract class OrdersRepo {
   Future<Either<Failure, String>> uploadPaymentProof({
     required int invoiceId,
     required String imagePath,
+  });
+
+  // ==========================================
+  // Cart Operations (Shein Products)
+  // ==========================================
+
+  /// الحصول على السلة الحالية
+  Future<Either<Failure, Map<String, dynamic>>> getCart();
+
+  /// إضافة منتج Shein للسلة
+  Future<Either<Failure, Map<String, dynamic>>> addToCart({
+    required int quantity,
+    required String sheinProductId,
+    required String productName,
+    required double productPrice,
+    required String productImg,
+    required String description,
+    required String linkProducts,
+  });
+
+  /// حذف عنصر من السلة
+  Future<Either<Failure, Map<String, dynamic>>> removeFromCart({
+    required int itemId,
+  });
+
+  /// اختيار عنوان التوصيل
+  Future<Either<Failure, Map<String, dynamic>>> selectAddress({
+    required int invoiceId,
+    required int addressId,
+  });
+
+  /// تطبيق كوبون
+  Future<Either<Failure, Map<String, dynamic>>> applyCoupon({
+    required int invoiceId,
+    required String couponCode,
   });
 }

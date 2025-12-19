@@ -22,7 +22,12 @@ class CustomHomeAppbar extends StatelessWidget {
           shape: OvalBorder(),
           color: Color(0xffeef8ed),
         ),
-        child: SvgPicture.asset(Assets.imagesNotification),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, 'notifications_view');
+          },
+          child: SvgPicture.asset(Assets.imagesNotification),
+        ),
       ),
     );
   }

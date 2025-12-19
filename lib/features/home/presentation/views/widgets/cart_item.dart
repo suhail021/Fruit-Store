@@ -16,65 +16,87 @@ class CartItem extends StatelessWidget {
   const CartItem({super.key, required this.carItemEntity});
 
   final CartItemEntity carItemEntity;
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return BlocBuilder<CartItemCubit, CartItemState>(
       buildWhen: (prev, current) {
         if (current is CartItemUpdated) {
-          if (current.cartItemEntity == carItemEntity) {
-            return true;
-          }
+          return current.cartItemEntity == carItemEntity;
         }
         return false;
       },
       builder: (context, state) {
-        return IntrinsicHeight(
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// Product Image
               Container(
-                width: 73,
-                height: 92,
-                decoration: const BoxDecoration(color: Color(0xFFF3F5F7)),
+                width: size.width * 0.2, // responsive width
+                height: size.width * 0.28,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F5F7),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: CustomNetworkImage(
                   imageUrl: carItemEntity.productEntity.imageUrl!,
                 ),
               ),
-              const SizedBox(width: 17),
+
+              const SizedBox(width: 12),
+
+              /// Product Details
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    /// Name + Delete
                     Row(
                       children: [
-                        Text(
-                          carItemEntity.productEntity.name,
-                          style: TextStyles.bold13,
+                        Expanded(
+                          child: Text(
+                            carItemEntity.productEntity.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyles.bold13,
+                          ),
                         ),
-                        const Spacer(),
                         GestureDetector(
                           onTap: () {
                             context.read<CartCubit>().deleteCarItem(
                               carItemEntity,
                             );
                           },
-                          child: SvgPicture.asset(Assets.imagesTrash),
+                          child: SvgPicture.asset(
+                            Assets.imagesTrash,
+                            width: 18,
+                          ),
                         ),
                       ],
                     ),
+
+                    const SizedBox(height: 6),
+
+                    /// Size & Color (for clothes)
                     Text(
-                      '${carItemEntity.calculateTotalWeight()} كم',
-                      textAlign: TextAlign.right,
+                      'التفاصيل : ${carItemEntity.productEntity.description} ',
                       style: TextStyles.regular13.copyWith(
                         color: AppColors.secondaryColor,
                       ),
                     ),
+                    const SizedBox(height: 6),
+
+                    /// Quantity & Price
                     Row(
                       children: [
                         CartItemActionButtons(cartItemEntity: carItemEntity),
                         const Spacer(),
                         Text(
-                          '${carItemEntity.calculateTotalPrice()} ريال ',
+                          '${carItemEntity.calculateTotalPrice()} ريال',
                           style: TextStyles.bold16.copyWith(
                             color: AppColors.secondaryColor,
                           ),

@@ -22,7 +22,7 @@ class OrdersRepoImpl implements OrdersRepo {
     // استخراج البيانات من order object
     try {
       final items = <Map<String, dynamic>>[];
-      
+
       // تحويل cart items إلى format الـ API
       if (order.cartEntity != null && order.cartEntity.cartItems != null) {
         for (var item in order.cartEntity.cartItems) {
@@ -35,7 +35,7 @@ class OrdersRepoImpl implements OrdersRepo {
       }
 
       final idAddress = order.shippingAddressEntity?.id ?? 0;
-      
+
       return await createOrder(
         items: items,
         idAddress: idAddress,
@@ -57,7 +57,7 @@ class OrdersRepoImpl implements OrdersRepo {
   }) async {
     try {
       final token = await Prefs.getString('auth_token');
-      
+
       if (token == null) {
         return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
       }
@@ -81,7 +81,6 @@ class OrdersRepoImpl implements OrdersRepo {
 
       log('✅ Order created successfully');
       return Right(response);
-
     } on ServerException catch (e) {
       log('❌ ServerException in createOrder: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -95,7 +94,7 @@ class OrdersRepoImpl implements OrdersRepo {
   Future<Either<Failure, Map<String, dynamic>>> getMyOrders() async {
     try {
       final token = await Prefs.getString('auth_token');
-      
+
       if (token == null) {
         return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
       }
@@ -109,7 +108,6 @@ class OrdersRepoImpl implements OrdersRepo {
 
       log('✅ Orders retrieved successfully');
       return Right(response);
-
     } on ServerException catch (e) {
       log('❌ ServerException in getMyOrders: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -123,7 +121,7 @@ class OrdersRepoImpl implements OrdersRepo {
   Future<Either<Failure, Map<String, dynamic>>> getOrder(int id) async {
     try {
       final token = await Prefs.getString('auth_token');
-      
+
       if (token == null) {
         return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
       }
@@ -137,7 +135,6 @@ class OrdersRepoImpl implements OrdersRepo {
 
       log('✅ Order retrieved successfully');
       return Right(response);
-
     } on ServerException catch (e) {
       log('❌ ServerException in getOrder: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -154,7 +151,7 @@ class OrdersRepoImpl implements OrdersRepo {
   }) async {
     try {
       final token = await Prefs.getString('auth_token');
-      
+
       if (token == null) {
         return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
       }
@@ -169,7 +166,6 @@ class OrdersRepoImpl implements OrdersRepo {
 
       log('✅ Order cancelled successfully');
       return Right(response['message'] as String);
-
     } on ServerException catch (e) {
       log('❌ ServerException in cancelOrder: ${e.message}');
       return Left(ServerFailure(e.message));
@@ -186,7 +182,7 @@ class OrdersRepoImpl implements OrdersRepo {
   }) async {
     try {
       final token = await Prefs.getString('auth_token');
-      
+
       if (token == null) {
         return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
       }
@@ -194,11 +190,13 @@ class OrdersRepoImpl implements OrdersRepo {
       log('📤 Uploading payment proof for invoice #$invoiceId');
 
       // استخدام multipart لرفع الصورة
-      final url = Uri.parse('${ApiConstants.baseUrl}/invoices/$invoiceId/payment-proof');
-      
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}/invoices/$invoiceId/payment-proof',
+      );
+
       var request = http.MultipartRequest('POST', url);
       request.headers.addAll(ApiConstants.headersWithToken(token));
-      
+
       // إضافة الصورة
       request.files.add(
         await http.MultipartFile.fromPath('payment_proof', imagePath),
@@ -213,12 +211,185 @@ class OrdersRepoImpl implements OrdersRepo {
       } else {
         throw ServerException(message: 'فشل رفع إثبات الدفع');
       }
-
     } on ServerException catch (e) {
       log('❌ ServerException in uploadPaymentProof: ${e.message}');
       return Left(ServerFailure(e.message));
     } catch (e) {
       log('❌ Exception in uploadPaymentProof: $e');
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  // ==========================================
+  // Cart Operations
+  // ==========================================
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getCart() async {
+    try {
+      final token = await Prefs.getString('auth_token');
+
+      if (token == null) {
+        return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
+      }
+
+      log('🛒 Getting current cart');
+
+      final response = await apiService.get(
+        endpoint: ApiConstants.invoicesGetCart,
+        headers: ApiConstants.headersWithToken(token),
+      );
+
+      log('✅ Cart retrieved successfully');
+      return Right(response);
+    } on ServerException catch (e) {
+      log('❌ ServerException in getCart: ${e.message}');
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      log('❌ Exception in getCart: $e');
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> addToCart({
+    required int quantity,
+    required String sheinProductId,
+    required String productName,
+    required double productPrice,
+    required String productImg,
+    required String description,
+    required String linkProducts,
+  }) async {
+    try {
+      final token = await Prefs.getString('auth_token');
+
+      if (token == null) {
+        return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
+      }
+
+      log('➡️ Adding Shein product to cart: $productName');
+
+      final requestData = {
+        'quantity': quantity,
+        'shein_product_id': sheinProductId,
+        'product_name': productName,
+        'product_price': productPrice,
+        'product_img': productImg,
+        'description': description,
+        'link_products': linkProducts,
+      };
+
+      final response = await apiService.post(
+        endpoint: ApiConstants.invoicesAddToCart,
+        data: requestData,
+        headers: ApiConstants.headersWithToken(token),
+      );
+
+      log('✅ Product added to cart successfully');
+      return Right(response);
+    } on ServerException catch (e) {
+      log('❌ ServerException in addToCart: ${e.message}');
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      log('❌ Exception in addToCart: $e');
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> removeFromCart({
+    required int itemId,
+  }) async {
+    try {
+      final token = await Prefs.getString('auth_token');
+
+      if (token == null) {
+        return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
+      }
+
+      log('🗑️ Removing item from cart: $itemId');
+
+      final response = await apiService.post(
+        endpoint: '${ApiConstants.invoicesRemoveFromCart}/$itemId',
+        data: {}, // Empty data for delete operation
+        headers: ApiConstants.headersWithToken(token),
+      );
+
+      log('✅ Item removed from cart successfully');
+      return Right(response);
+    } on ServerException catch (e) {
+      log('❌ ServerException in removeFromCart: ${e.message}');
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      log('❌ Exception in removeFromCart: $e');
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> selectAddress({
+    required int invoiceId,
+    required int addressId,
+  }) async {
+    try {
+      final token = await Prefs.getString('auth_token');
+
+      if (token == null) {
+        return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
+      }
+
+      log('📍 Selecting address for invoice $invoiceId');
+
+      final requestData = {'id_address': addressId};
+
+      final response = await apiService.post(
+        endpoint:
+            '${ApiConstants.invoicesSelectAddress}/$invoiceId/select-address',
+        data: requestData,
+        headers: ApiConstants.headersWithToken(token),
+      );
+
+      log('✅ Address selected successfully');
+      return Right(response);
+    } on ServerException catch (e) {
+      log('❌ ServerException in selectAddress: ${e.message}');
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      log('❌ Exception in selectAddress: $e');
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> applyCoupon({
+    required int invoiceId,
+    required String couponCode,
+  }) async {
+    try {
+      final token = await Prefs.getString('auth_token');
+
+      if (token == null) {
+        return Left(ServerFailure('يرجى تسجيل الدخول أولاً'));
+      }
+
+      log('🎫 Applying coupon: $couponCode');
+
+      final requestData = {'coupon_code': couponCode};
+
+      final response = await apiService.post(
+        endpoint: '${ApiConstants.invoicesApplyCoupon}/$invoiceId/apply-coupon',
+        data: requestData,
+        headers: ApiConstants.headersWithToken(token),
+      );
+
+      log('✅ Coupon applied successfully');
+      return Right(response);
+    } on ServerException catch (e) {
+      log('❌ ServerException in applyCoupon: ${e.message}');
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      log('❌ Exception in applyCoupon: $e');
       return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }

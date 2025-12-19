@@ -41,8 +41,8 @@ class ProductFAB extends StatelessWidget {
       final selectedColor = await webViewController.evaluateJavascript(
         source: """
         (function() {
-          var el = document.querySelector('ul.goods-size__sizes[data-attr_id="27"] li.size-active');
-          return el ? el.getAttribute('data-attr_value') : null;
+          var el = document.querySelector('li.color-active a');
+          return el ? el.getAttribute('aria-label') : null;
         })();
         """,
       );

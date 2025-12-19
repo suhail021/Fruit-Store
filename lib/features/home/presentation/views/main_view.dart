@@ -20,6 +20,7 @@ class _MainViewState extends State<MainView> {
     return BlocProvider(
       create: (context) => CartCubit(),
       child: Scaffold(
+        extendBody: currentViewIndex == 2,
         bottomNavigationBar: CustomBottomNavigationBar(
           onItemTapped: (index) {
             currentViewIndex = index;
@@ -27,6 +28,8 @@ class _MainViewState extends State<MainView> {
           },
         ),
         body: SafeArea(
+          top: currentViewIndex != 2,
+          bottom: currentViewIndex != 2,
           child: Mainviewbodyblocconsumer(currentViewIndex: currentViewIndex),
         ),
       ),

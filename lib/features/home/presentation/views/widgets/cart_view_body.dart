@@ -19,7 +19,6 @@ class CartViewBody extends StatelessWidget {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  SizedBox(height: kTopPadding),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: kHorizintalPadding,

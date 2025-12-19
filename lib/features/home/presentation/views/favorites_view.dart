@@ -14,15 +14,17 @@ class FavoritesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FavoritesCubit(getIt<FavoritesRepo>())..getFavorites(),
-      child: Scaffold(
-        appBar: buildAppBar(
-          context,
-          title: 'المفضلة',
-          showBackIcon: true,
+    return SafeArea(
+      child: BlocProvider(
+        create: (context) => FavoritesCubit(getIt<FavoritesRepo>())..getFavorites(),
+        child: Scaffold(
+          appBar: buildAppBar(
+            context,
+            title: 'المفضلة',
+            showBackIcon: true,
+          ),
+          body: const FavoritesViewBody(),
         ),
-        body: const FavoritesViewBody(),
       ),
     );
   }
