@@ -60,4 +60,56 @@ class ProductEntity {
 
   // ✅ وزن افتراضي
   double get unitAmount => 1.0;
+
+  // Serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'img': img,
+      'price': price,
+      'discount_price': discountPrice,
+      'final_price': finalPrice,
+      'quantity': quantity,
+      'status': status,
+      'is_available': isAvailable,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+      'is_shein_product': isSheinProduct,
+      'selected_size': selectedSize,
+      'selected_color': selectedColor,
+      'shein_url': sheinUrl,
+    };
+  }
+
+  factory ProductEntity.fromJson(Map<String, dynamic> json) {
+    return ProductEntity(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      img: json['img'],
+      price: (json['price'] as num).toDouble(),
+      discountPrice:
+          json['discount_price'] != null
+              ? (json['discount_price'] as num).toDouble()
+              : null,
+      finalPrice: (json['final_price'] as num).toDouble(),
+      quantity: json['quantity'],
+      status: json['status'],
+      isAvailable: json['is_available'],
+      createdAt:
+          json['created_at'] != null
+              ? DateTime.parse(json['created_at'])
+              : null,
+      updatedAt:
+          json['updated_at'] != null
+              ? DateTime.parse(json['updated_at'])
+              : null,
+      isSheinProduct: json['is_shein_product'] ?? false,
+      selectedSize: json['selected_size'],
+      selectedColor: json['selected_color'],
+      sheinUrl: json['shein_url'],
+    );
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/features/auth/presentation/views/signin_view.dart';
 import 'package:myapp/features/auth/presentation/views/signup_view.dart';
 import 'package:myapp/features/auth/presentation/views/otp_verification_view.dart';
+import 'package:myapp/features/checkout/presentation/views/checkout_view.dart';
 import 'package:myapp/features/home/presentation/views/cart_view.dart';
 import 'package:myapp/features/home/presentation/views/favorites_view.dart';
 import 'package:myapp/features/home/presentation/views/home_view.dart'; // ✅ إضافة
@@ -10,6 +11,7 @@ import 'package:myapp/features/home/presentation/views/main_view.dart';
 import 'package:myapp/features/on_boarding/presentation/views/on_boarding_view.dart';
 import 'package:myapp/features/notifications/presentation/views/notifications_view.dart';
 import 'package:myapp/features/splash/presentation/views/splash_view.dart';
+import 'package:myapp/features/home/presentation/views/domain/entites/cart_entity.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -49,7 +51,12 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case CartView.routeName:
       return MaterialPageRoute(builder: (context) => const CartView());
     case NotificationsView.routeName:
-      return MaterialPageRoute(builder: (context) => const NotificationsView());
+      return MaterialPageRoute(builder: (context) => const CartView());
+    case CheckoutView.routeName:
+      final cartEntity = settings.arguments as CartEntity;
+      return MaterialPageRoute(
+        builder: (context) => CheckoutView(cartEntity: cartEntity),
+      );
 
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());

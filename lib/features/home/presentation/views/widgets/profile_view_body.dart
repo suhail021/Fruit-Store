@@ -140,7 +140,12 @@ class ProfileViewBody extends StatelessWidget {
                       style: TextStyle(color: Colors.red),
                     ),
                     onTap: () async {
-                      await Prefs.clear();
+                      await Prefs.remove('user_data');
+                      await Prefs.remove('auth_token');
+                      await Prefs.remove('addresses');
+                      await Prefs.remove('favorites');
+                      await Prefs.remove('referral_data');
+                      await Prefs.remove('stats');
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         SigninView.routeName,

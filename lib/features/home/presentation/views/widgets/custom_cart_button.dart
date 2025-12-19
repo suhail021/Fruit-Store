@@ -26,7 +26,7 @@ class CustomCartButton extends StatelessWidget {
             }
           },
           text:
-              'الدفع  ${context.watch<CartCubit>().cartEntity.calculateTotalPrice()} ريال ',
+              'الدفع  ${context.watch<CartCubit>().cartEntity.totalPriceFormatted} ريال ',
         );
       },
     );

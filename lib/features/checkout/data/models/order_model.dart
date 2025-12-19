@@ -2,6 +2,7 @@ import 'package:myapp/features/checkout/data/models/order_product_model.dart';
 import 'package:myapp/features/checkout/data/models/shipping_address_model.dart';
 import 'package:myapp/features/checkout/domain/entities/order_entity.dart';
 import 'package:uuid/uuid.dart';
+
 class OrderModel {
   final double totalPrice;
   final String uId;
@@ -27,21 +28,22 @@ class OrderModel {
       shippingAddressModel: ShippingAddressModel.fromEntity(
         orderEntity.shippingAddressEntity!,
       ),
-      orderProducts: orderEntity.cartEntity.cartItems
-          .map((e) => OrderProductModel.fromEntity(cartItemEntity: e))
-          .toList(),
+      orderProducts:
+          orderEntity.cartEntity.cartItems
+              .map((e) => OrderProductModel.fromEntity(cartItemEntity: e))
+              .toList(),
       paymentMethod: 'Cash', // ✅ ثابت
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'orderId': orderId,
-        'totalPrice': totalPrice,
-        'uId': uId,
-        'status': 'pending',
-        'date': DateTime.now().toIso8601String(),
-        'shippingAddress': shippingAddressModel.toJson(),
-        'orderProducts': orderProducts.map((e) => e.toJson()).toList(),
-        'paymentMethod': paymentMethod,
-      };
+    'orderId': orderId,
+    'totalPrice': totalPrice,
+    'uId': uId,
+    'status': 'pending',
+    'date': DateTime.now().toIso8601String(),
+    'shippingAddress': shippingAddressModel.toJson(),
+    'orderProducts': orderProducts.map((e) => e.toJson()).toList(),
+    'paymentMethod': paymentMethod,
+  };
 }

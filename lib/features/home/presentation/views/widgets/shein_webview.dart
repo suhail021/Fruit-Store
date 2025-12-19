@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:myapp/core/entities/product_entity.dart';
+import 'package:myapp/core/cubits/favorites_cubit/favorites_cubit.dart';
 import 'package:myapp/features/home/presentation/cubits/cart_cubit/cart_cubit.dart';
 
 class SheinWebView extends StatefulWidget {
@@ -24,6 +25,126 @@ class SheinWebView extends StatefulWidget {
 class _SheinWebViewState extends State<SheinWebView> {
   InAppWebViewController? webViewController;
   bool isProductPage = false;
+
+  Future<ProductEntity?> _getProductFromPage(BuildContext context) async {
+    final controller = webViewController;
+    if (controller == null) return null;
+
+    final hasClickToBuy = await controller.evaluateJavascript(
+      source: """
+        document.querySelector('ul.choose-size li.goods-size__click-to-buy') !== null;
+      """,
+    );
+
+    if (hasClickToBuy == true) {
+      await controller.evaluateJavascript(
+        source: """
+          document.querySelector('ul.choose-size li.goods-size__click-to-buy').click();
+        """,
+      );
+      await Future.delayed(const Duration(seconds: 1)); // Reduced delay
+    }
+
+    final selectedColor = await controller.evaluateJavascript(
+      source: """
+        (function() {
+          var el = document.querySelector('li.color-active a');
+          return el ? el.getAttribute('aria-label') : null;
+        })();
+      """,
+    );
+
+    final selectedSize = await controller.evaluateJavascript(
+      source: """
+        (function() {
+          var el = document.querySelector('ul.goods-size__sizes[data-attr_id="87"] li.size-active');
+          return el ? el.getAttribute('data-attr_value') : null;
+        })();
+      """,
+    );
+
+    final colorCount = await controller.evaluateJavascript(
+      source: """
+        document.querySelectorAll('ul.goods-size__sizes[data-attr_id="27"] li').length;
+      """,
+    );
+
+    final sizeCount = await controller.evaluateJavascript(
+      source: """
+        document.querySelectorAll('ul.goods-size__sizes[data-attr_id="87"] li').length;
+      """,
+    );
+    // Helper to parse dynamic values safely
+    int safeInt(dynamic val) =>
+        val is int ? val : int.tryParse(val.toString()) ?? 0;
+
+    if ((safeInt(colorCount) > 0 &&
+            (selectedColor == null ||
+                selectedColor.toString().trim().isEmpty)) ||
+        (safeInt(sizeCount) > 0 &&
+            (selectedSize == null || selectedSize.toString().trim().isEmpty))) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("⚠️ يرجى اختيار السمات قبل الإضافة")),
+        );
+      }
+      return null;
+    }
+
+    final name = await controller.evaluateJavascript(
+      source:
+          "document.getElementById('detail-view')?.getAttribute('data-goods_name');",
+    );
+    final price = await controller.evaluateJavascript(
+      source:
+          "document.getElementById('detail-view')?.getAttribute('data-goods_ga_price');",
+    );
+    final productId = await controller.evaluateJavascript(
+      source:
+          "document.getElementById('detail-view')?.getAttribute('data-goods_id');",
+    );
+    final imageUrl = await controller.evaluateJavascript(
+      source: """
+        (function() {
+          var img = document.querySelector('.crop-image-container__img');
+          return img ? (img.getAttribute('data-src') || img.getAttribute('src')) : null;
+        })();
+      """,
+    );
+
+    if (price == null || price.toString().trim().isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("⚠️ لا يمكن إضافة المنتج — السعر غير متوفر."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return null;
+    }
+
+    double total = double.tryParse(price.toString()) ?? 0;
+
+    return ProductEntity(
+      id:
+          int.tryParse(productId.toString()) ??
+          DateTime.now().millisecondsSinceEpoch,
+      name: name.toString(),
+      price: total,
+      finalPrice: total,
+      quantity: 100,
+      status: 'shein',
+      isAvailable: true,
+      img:
+          imageUrl.toString().startsWith("http") ? imageUrl : "https:$imageUrl",
+      description: 'Shein Product',
+      isSheinProduct: true,
+      selectedColor: selectedColor?.toString(),
+      selectedSize: selectedSize?.toString(),
+      sheinUrl: await controller.getUrl().then((url) => url.toString()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +172,7 @@ class _SheinWebViewState extends State<SheinWebView> {
               onLoadStart: (controller, url) async {},
 
               onLoadStop: (controller, url) async {
-                final hasDetail = await controller?.evaluateJavascript(
+                final hasDetail = await controller.evaluateJavascript(
                   source:
                       "document.getElementById('detail-view') != null || document.querySelector('.goods-detail-top') != null;",
                 );
@@ -146,357 +267,273 @@ class _SheinWebViewState extends State<SheinWebView> {
                       horizontal: 12.0,
                       vertical: 8.0,
                     ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          elevation: 6,
+                          child: IconButton(
+                            onPressed: () async {
+                              final product = await _getProductFromPage(
+                                context,
+                              );
+                              if (product != null && context.mounted) {
+                                context.read<FavoritesCubit>().toggleFavorite(
+                                  productId: product.id,
+                                  productName: product.name,
+                                  productDescription: product.description,
+                                  img: product.img,
+                                  price: product.price,
+                                  finalPrice: product.finalPrice,
+                                  productLink: product.sheinUrl ?? '',
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("❤️ تم إضافة الى المفضلة"),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.favorite_border,
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
-                        onPressed: () async {
-                          final hasClickToBuy = await webViewController
-                              ?.evaluateJavascript(
-                                source: """
-                     document.querySelector('ul.choose-size li.goods-size__click-to-buy') !== null;
-                     """,
-                              );
-
-                          if (hasClickToBuy == true) {
-                            await webViewController?.evaluateJavascript(
-                              source: """
-                         document.querySelector('ul.choose-size li.goods-size__click-to-buy').click();
-                            """,
-                            );
-                            await Future.delayed(const Duration(seconds: 2));
-                          }
-
-                          final selectedColor = await webViewController
-                              ?.evaluateJavascript(
-                                source: """
-                    (function() {
-                      var el = document.querySelector('li.color-active a');
-                      return el ? el.getAttribute('aria-label') : null;
-                    })();
-                  """,
-                              );
-
-                          final selectedSize = await webViewController
-                              ?.evaluateJavascript(
-                                source: """
-                   (function() {
-                     var el = document.querySelector('ul.goods-size__sizes[data-attr_id="87"] li.size-active');
-                      return el ? el.getAttribute('data-attr_value') : null;
-                       })();
-                           """,
-                              );
-
-                          final colorCount = await webViewController
-                              ?.evaluateJavascript(
-                                source: """
-                     document.querySelectorAll('ul.goods-size__sizes[data-attr_id="27"] li').length;
-                    """,
-                              );
-
-                          final sizeCount = await webViewController
-                              ?.evaluateJavascript(
-                                source: """
-                    document.querySelectorAll('ul.goods-size__sizes[data-attr_id="87"] li').length;
-                   """,
-                              );
-
-                          if ((colorCount > 0 &&
-                                  (selectedColor == null ||
-                                      selectedColor
-                                          .toString()
-                                          .trim()
-                                          .isEmpty)) ||
-                              (sizeCount > 0 &&
-                                  (selectedSize == null ||
-                                      selectedSize
-                                          .toString()
-                                          .trim()
-                                          .isEmpty))) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "⚠️ يرجى اختيار السمات قبل الإضافة إلى السلة",
-                                  ),
+                        Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                              );
-                            }
-                            return;
-                          }
+                                elevation: 6,
+                              ),
+                              onPressed: () async {
+                                final product = await _getProductFromPage(
+                                  context,
+                                );
+                                if (product == null || !context.mounted) return;
 
-                          final name = await webViewController?.evaluateJavascript(
-                            source:
-                                "document.getElementById('detail-view')?.getAttribute('data-goods_name');",
-                          );
-                          final price = await webViewController?.evaluateJavascript(
-                            source:
-                                "document.getElementById('detail-view')?.getAttribute('data-goods_ga_price');",
-                          );
-                          final productId = await webViewController
-                              ?.evaluateJavascript(
-                                source:
-                                    "document.getElementById('detail-view')?.getAttribute('data-goods_id');",
-                              );
-                          final imageUrl = await webViewController
-                              ?.evaluateJavascript(
-                                source: """
-                 (function() {
-                   var img = document.querySelector('.crop-image-container__img');
-                   return img ? (img.getAttribute('data-src') || img.getAttribute('src')) : null;
-                         })();
-                           """,
-                              );
-                          if (price == null ||
-                              price.toString().trim().isEmpty) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "⚠️ لا يمكن إضافة المنتج — السعر غير متوفر.",
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                            return;
-                          }
+                                final cartCubit = context.read<CartCubit>();
+                                int quantity = 1;
 
-                          int quantity = 1;
-                          double total = double.tryParse(price.toString()) ?? 0;
-                          final cartCubit =
-                              context.read<CartCubit>(); // Capture Cubit here
-
-                          if (context.mounted) {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return StatefulBuilder(
-                                  builder: (context, setSheetState) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: SingleChildScrollView(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            if (imageUrl != null &&
-                                                imageUrl.toString().isNotEmpty)
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  bottom: 10,
-                                                ),
-                                                child: SizedBox(
-                                                  height: 120,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return StatefulBuilder(
+                                      builder: (context, setSheetState) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (product.img != null)
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          bottom: 10,
                                                         ),
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          imageUrl
-                                                                  .toString()
-                                                                  .startsWith(
-                                                                    "http",
-                                                                  )
-                                                              ? imageUrl
-                                                              : "https:${imageUrl.toString()}",
-                                                      fit: BoxFit.cover,
-                                                      placeholder:
-                                                          (
-                                                            context,
-                                                            url,
-                                                          ) => Container(
-                                                            color:
-                                                                Colors
-                                                                    .grey[200],
-                                                            child: const Center(
-                                                              child:
-                                                                  CircularProgressIndicator(),
+                                                    child: SizedBox(
+                                                      height: 120,
+                                                      width: double.infinity,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
                                                             ),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl:
+                                                              product.img!,
+                                                          fit: BoxFit.cover,
+                                                          placeholder:
+                                                              (
+                                                                context,
+                                                                url,
+                                                              ) => Container(
+                                                                color:
+                                                                    Colors
+                                                                        .grey[200],
+                                                              ),
+                                                          errorWidget:
+                                                              (
+                                                                context,
+                                                                url,
+                                                                error,
+                                                              ) => Container(
+                                                                color:
+                                                                    Colors
+                                                                        .grey[300],
+                                                                child: const Icon(
+                                                                  Icons.error,
+                                                                  color:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                Text(
+                                                  "📦 الاسم: ${product.name}",
+                                                  textAlign: TextAlign.right,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "💰 السعر: \$${product.price}",
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                if (product.selectedColor !=
+                                                    null)
+                                                  Text(
+                                                    "🎨 اللون: ${product.selectedColor}",
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                if (product.selectedSize !=
+                                                    null)
+                                                  Text(
+                                                    " ${product.selectedSize} :المقاس",
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                const SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        if (quantity > 1) {
+                                                          setSheetState(
+                                                            () => quantity--,
+                                                          );
+                                                        }
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.remove,
+                                                      ),
+                                                    ),
+                                                    Text(quantity.toString()),
+                                                    IconButton(
+                                                      onPressed:
+                                                          () => setSheetState(
+                                                            () => quantity++,
                                                           ),
-                                                      errorWidget:
-                                                          (
-                                                            context,
-                                                            url,
-                                                            error,
-                                                          ) => Container(
-                                                            color:
-                                                                Colors
-                                                                    .grey[300],
-                                                            child: const Icon(
-                                                              Icons.error,
-                                                              color: Colors.red,
+                                                      icon: const Icon(
+                                                        Icons.add,
+                                                      ),
+                                                    ),
+                                                    const Text("🔢 الكمية:"),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  "💵 السعر الكلي: \$${(quantity * product.price).toStringAsFixed(2)}",
+                                                ),
+                                                const SizedBox(height: 30),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    cartCubit.addProduct(
+                                                      product,
+                                                      quantity: quantity,
+                                                    );
+                                                    Navigator.pop(context);
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          "✅ تم إضافة $quantity منتج للسلة",
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.green,
+                                                        duration:
+                                                            const Duration(
+                                                              seconds: 2,
                                                             ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xFF1B4426),
+                                                    minimumSize: const Size(
+                                                      double.infinity,
+                                                      50,
+                                                    ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
                                                           ),
                                                     ),
                                                   ),
-                                                ),
-                                              ),
-                                            Text(
-                                              "📦 الاسم: $name",
-                                              textAlign: TextAlign.right,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              "💰 السعر: \$${price}",
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            if (selectedColor != null &&
-                                                selectedColor
-                                                    .toString()
-                                                    .trim()
-                                                    .isNotEmpty)
-                                              Text(
-                                                "🎨 اللون: $selectedColor",
-                                                style: const TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            if (selectedSize != null &&
-                                                selectedSize
-                                                    .toString()
-                                                    .trim()
-                                                    .isNotEmpty)
-                                              Text(
-                                                " $selectedSize :المقاس",
-                                                style: const TextStyle(
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                IconButton(
-                                                  onPressed: () {
-                                                    if (quantity > 1) {
-                                                      setSheetState(
-                                                        () => quantity--,
-                                                      );
-                                                    }
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.remove,
+                                                  child: const Text(
+                                                    "تأكيد الإضافة",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                    ),
                                                   ),
                                                 ),
-                                                Text(quantity.toString()),
-                                                IconButton(
-                                                  onPressed:
-                                                      () => setSheetState(
-                                                        () => quantity++,
-                                                      ),
-                                                  icon: const Icon(Icons.add),
-                                                ),
-                                                const Text("🔢 الكمية:"),
                                               ],
                                             ),
-                                            Text(
-                                              "💵 السعر الكلي: \$${(quantity * total).toStringAsFixed(2)}",
-                                            ),
-                                            const SizedBox(height: 30),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                // ✅ إضافة المنتج للسلة فعلياً
-                                                final product = ProductEntity(
-                                                  id:
-                                                      int.tryParse(
-                                                        productId.toString(),
-                                                      ) ??
-                                                      DateTime.now()
-                                                          .millisecondsSinceEpoch,
-                                                  name: name.toString(),
-                                                  price: total,
-                                                  finalPrice: total,
-                                                  quantity:
-                                                      100, // Stock placeholder
-
-                                                  status: 'shein',
-                                                  isAvailable: true,
-                                                  img:
-                                                      imageUrl
-                                                              .toString()
-                                                              .startsWith(
-                                                                "http",
-                                                              )
-                                                          ? imageUrl
-                                                          : "https:$imageUrl",
-                                                  description: 'Shein Product',
-                                                  isSheinProduct: true,
-                                                  selectedColor:
-                                                      selectedColor?.toString(),
-                                                  selectedSize:
-                                                      selectedSize?.toString(),
-                                                  sheinUrl:
-                                                      webViewController
-                                                          ?.getUrl()
-                                                          .toString(),
-                                                );
-
-                                                // Add logic (Loop for quantity if needed, or update cart item)
-                                                // Since CartCubit.addProduct adds 1 or increments, we might need to loop
-                                                cartCubit.addProduct(
-                                                  product,
-                                                  quantity: quantity,
-                                                );
-
-                                                Navigator.pop(context);
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      "✅ تم إضافة $quantity منتج للسلة",
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text(
-                                                "تأكيد الإضافة",
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
                                 );
                               },
-                            );
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.add_shopping_cart, color: Colors.white),
-                            SizedBox(width: 10),
-                            Text(
-                              'أضف إلى السلة',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.add_shopping_cart,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'أضف إلى السلة',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),

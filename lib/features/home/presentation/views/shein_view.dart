@@ -6,6 +6,7 @@ class SheinView extends StatelessWidget {
   static const String routeName = 'shein_view';
   @override
   Widget build(BuildContext context) {
-    return const SheinViewBody();
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
+    return SheinViewBody(initialUrl: args);
   }
 }

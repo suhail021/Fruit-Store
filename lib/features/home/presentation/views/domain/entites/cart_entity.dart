@@ -15,12 +15,14 @@ class CartEntity {
   }
 
   double calculateTotalPrice() {
-    double totalPrice = 0;
-    for (var carItem in cartItems) {
-      totalPrice += carItem.calculateTotalPrice();
+    double total = 0;
+    for (var item in cartItems) {
+      total += item.calculateTotalPrice();
     }
-    return totalPrice;
+    return DoubleRounding(total).roundTo2();
   }
+
+  String get totalPriceFormatted => calculateTotalPrice().toStringAsFixed(2);
 
   bool isExis(ProductEntity product) {
     for (var carItem in cartItems) {
@@ -39,4 +41,8 @@ class CartEntity {
     }
     return CartItemEntity(productEntity: product, quantity: 1);
   }
+}
+
+extension DoubleRounding on num {
+  double roundTo2() => double.parse(toStringAsFixed(2));
 }

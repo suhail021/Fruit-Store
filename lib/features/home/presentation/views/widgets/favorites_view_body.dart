@@ -53,7 +53,6 @@ class FavoritesViewBody extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 // قائمة المفضلات
                 Expanded(
                   child: ListView.separated(

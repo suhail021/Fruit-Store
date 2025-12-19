@@ -35,7 +35,7 @@ class _OrdersViewBodyState extends State<OrdersViewBody>
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: kHorizintalPadding),
-          child: buildAppBar(context, title: "طلباتي", showBackIcon: false),
+          child: buildAppBar(context, title: "الطلبات", showBackIcon: false),
         ),
 
         // Tabs

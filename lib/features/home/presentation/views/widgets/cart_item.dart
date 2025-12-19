@@ -96,10 +96,12 @@ class CartItem extends StatelessWidget {
                         CartItemActionButtons(cartItemEntity: carItemEntity),
                         const Spacer(),
                         Text(
-                          '${carItemEntity.calculateTotalPrice()} ريال',
+                          '${carItemEntity.totalPriceFormatted} ريال',
                           style: TextStyles.bold16.copyWith(
                             color: AppColors.secondaryColor,
+                            overflow: TextOverflow.ellipsis,
                           ),
+                          maxLines: 1,
                         ),
                       ],
                     ),
