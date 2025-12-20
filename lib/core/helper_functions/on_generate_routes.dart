@@ -12,6 +12,10 @@ import 'package:myapp/features/on_boarding/presentation/views/on_boarding_view.d
 import 'package:myapp/features/notifications/presentation/views/notifications_view.dart';
 import 'package:myapp/features/splash/presentation/views/splash_view.dart';
 import 'package:myapp/features/home/presentation/views/domain/entites/cart_entity.dart';
+import 'package:myapp/features/address/presentation/views/addresses_view.dart';
+import 'package:myapp/features/address/presentation/views/add_address_view.dart';
+import 'package:myapp/features/address/domain/entities/address_entity.dart'; // Import this
+import 'package:myapp/features/address/presentation/views/widgets/map_view.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -57,6 +61,16 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => CheckoutView(cartEntity: cartEntity),
       );
+
+    case AddressesView.routeName:
+      return MaterialPageRoute(builder: (context) => const AddressesView());
+    case AddAddressView.routeName:
+      final addressToEdit = settings.arguments as AddressEntity?;
+      return MaterialPageRoute(
+        builder: (context) => AddAddressView(addressToEdit: addressToEdit),
+      );
+    case MapView.routeName:
+      return MaterialPageRoute(builder: (context) => const MapView());
 
     default:
       return MaterialPageRoute(builder: (context) => const Scaffold());

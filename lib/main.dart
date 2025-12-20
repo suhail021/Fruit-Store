@@ -10,23 +10,24 @@ import 'package:myapp/core/services/shared_preferences_singleton.dart';
 import 'package:myapp/core/utils/app_colors.dart';
 import 'package:myapp/features/splash/presentation/views/splash_view.dart';
 import 'package:myapp/generated/l10n.dart';
+import 'package:myapp/features/address/presentation/cubits/address_cubit/address_cubit.dart';
+import 'package:myapp/features/address/data/repos/address_repo_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // WebView Debugging
   await InAppWebViewController.setWebContentsDebuggingEnabled(true);
-  
+
   // Bloc Observer
   Bloc.observer = CustomBlocObserver();
 
-  
   // SharedPreferences
   await Prefs.init();
-  
+
   // Dependency Injection
   setupGetIt();
-  
+
   runApp(const FruitApp());
 }
 
@@ -35,23 +36,26 @@ class FruitApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
-        fontFamily: 'Cairo',
+    return BlocProvider(
+      create: (context) => AddressCubit(AddressRepoImpl())..getAddresses(),
+      child: MaterialApp(
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
+          fontFamily: 'Cairo',
+        ),
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: const Locale('ar'),
+        supportedLocales: S.delegate.supportedLocales,
+        onGenerateRoute: onGenerateRoute,
+        initialRoute: SplashView.routeName,
+        debugShowCheckedModeBanner: false,
       ),
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      locale: const Locale('ar'),
-      supportedLocales: S.delegate.supportedLocales,
-      onGenerateRoute: onGenerateRoute,
-      initialRoute: SplashView.routeName,
-      debugShowCheckedModeBanner: false,
     );
   }
 }

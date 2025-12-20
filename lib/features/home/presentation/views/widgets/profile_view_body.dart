@@ -7,6 +7,7 @@ import 'package:myapp/core/widgets/custom_app_bar.dart';
 import 'package:myapp/features/auth/presentation/views/signin_view.dart';
 import 'package:myapp/features/home/presentation/cubits/profile_cubit/profile_cubit.dart';
 import 'package:myapp/features/home/presentation/cubits/profile_cubit/profile_state.dart';
+import 'package:myapp/features/address/presentation/views/addresses_view.dart';
 
 class ProfileViewBody extends StatelessWidget {
   const ProfileViewBody({super.key});
@@ -133,6 +134,18 @@ class ProfileViewBody extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Settings List
+                  ListTile(
+                    leading: const Icon(
+                      Icons.location_on,
+                      color: AppColors.primaryColor,
+                    ),
+                    title: const Text('عناويني'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      Navigator.pushNamed(context, AddressesView.routeName);
+                    },
+                  ),
+                  const Divider(),
                   ListTile(
                     leading: const Icon(Icons.logout, color: Colors.red),
                     title: const Text(

@@ -41,6 +41,7 @@ class _OrdersViewBodyState extends State<OrdersViewBody>
         // Tabs
         TabBar(
           controller: _tabController,
+          tabAlignment: TabAlignment.start,
           isScrollable: true,
           labelColor: Theme.of(context).primaryColor,
           unselectedLabelColor: Colors.grey,
